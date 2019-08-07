@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import Link from 'next/link'
+import { Link } from '../routes'
 import css from '../styles/Nav.styl'
 
 
@@ -14,13 +14,17 @@ class Nav extends Component {
   renderLinksList() {
     const links = [
       {
-        href: 'https://github.com/benwigley',
-        label: 'Github'
+        href: '/bmi-calculator',
+        label: 'BMI Calculator'
       },
-      {
-        href: 'http://benwigley.com',
-        label: 'Ben Wigley'
-      }
+      // {
+      //   href: '/shopping-list',
+      //   label: 'Shopping List'
+      // },
+      // {
+      //   href: '/mastermind',
+      //   label: 'Mastermind'
+      // }
     ]
     return (
       links.map(link => {

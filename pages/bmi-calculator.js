@@ -2,18 +2,18 @@ import React from 'react'
 import Head from '../components/Head'
 import Nav from '../components/Nav'
 import '../styles/global/base.styl'
-import css from '../styles/Homepage.styl'
+import css from '../styles/BmiCalculator.styl'
 
 
-const Home = () => (
+const BmiCaclulator = () => (
   <div>
-    <Head title="Home" />
+    <Head title="BMI Calculator" />
     <Nav />
 
     <div className={css.homepage}>
-      <h1 className="title">Welcome to Niki's Playground!</h1>
+      <h1 className="title">Welcome to Niki's BMI Calculator!</h1>
     </div>
   </div>
 )
 
-export default Home
+export default BmiCaclulator
