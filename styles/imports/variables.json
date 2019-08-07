@@ -1,0 +1,40 @@
+{
+  "__Global_Colours__": "",
+
+  "$tjmerBlue": "#054d79",
+  "$tjmerDarkBlue": "#264365",
+  "$tjmerPurple": "#5b176b",
+  "$tjmerLightRed": "#9a5050",
+  "$headerColor": "#000",
+  "$fullScreenFormGrey": "#23292f",
+  "$guestViewsContainerGrey": "#23292f",
+  "$userViewsContainerGrey": "#23292f",
+
+
+  "__Responsive_Sizes__": "",
+
+  "$phoneMaxWidth": "600px",
+  "$tabletMinWidth": "601px",
+  "$tabletMaxWidth": "768px",
+  "$desktopMinWidth": "769px",
+  "$desktopMaxWidth": "1080px",
+
+
+  "__Headers_Config__": "",
+
+  "$mobileNavHeight": "50px",
+
+
+  "__Sidebar_Config__": "",
+
+  "$sidebarWidth": "200px",
+  "$sidebarBgColor": "darken($userViewsContainerGrey, 3)",
+
+
+  "__Typeography__": "",
+
+  "$maxParagraphWidth": "40em",
+  "$muli": "'Muli', 'Montserrat', Arial, Sans",
+  "$montserrat": "'Montserrat', 'Muli', Arial, Sans",
+  "$errorColorForDarkBackground": "#ffe0d3"
+}
