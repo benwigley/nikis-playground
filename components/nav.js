@@ -14,6 +14,10 @@ class Nav extends Component {
   renderLinksList() {
     const links = [
       {
+        href: '/',
+        label: 'Home'
+      },
+      {
         href: '/bmi-calculator',
         label: 'BMI Calculator'
       },
