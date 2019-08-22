@@ -11,6 +11,11 @@
   "$userViewsContainerGrey": "#23292f",
 
 
+  "__Theme_Colours__": "",
+
+  "$darkBackground": "#181a1b",
+
+
   "__Responsive_Sizes__": "",
 
   "$phoneMaxWidth": "600px",
