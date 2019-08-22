@@ -17,10 +17,10 @@ class Nav extends Component {
         href: '/',
         label: 'Home'
       },
-      {
-        href: '/bmi-calculator',
-        label: 'BMI Calculator'
-      },
+      // {
+      //   href: '/bmi-calculator',
+      //   label: 'BMI Calculator'
+      // },
       {
         href: '/king-of-tokyo',
         label: 'King of Tokyo'
