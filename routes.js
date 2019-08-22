@@ -7,18 +7,27 @@ const ourRoutes = [
   {
     page: 'index',
     pattern: '/',
+    name: 'Home'
   },
   {
-    page: 'bmi-calculator',
-    pattern: '/bmi-calculator'
+    page: 'king-of-tokyo',
+    pattern: '/king-of-tokyo',
+    name: 'King of Tokyo'
   },
+  // {
+  //   page: 'bmi-calculator',
+  //   pattern: '/bmi-calculator'
+  //   name: 'BMI Calculator'
+  // },
   // {
   //   page: 'shopping-list',
   //   pattern: '/shopping-list'
+  //   name: 'Shopping List'
   // },
   // {
   //   page: 'mastermind',
   //   pattern: '/mastermind'
+  //   name: 'Mastermind'
   // },
 ]
 
