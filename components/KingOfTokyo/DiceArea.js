@@ -51,9 +51,14 @@ export default class DiceArea extends Component {
             Roll!
           </button>
         ) : (
-          <div className={css.diceContainer}>
-              <Dice diceNumber={3} />
-          </div>
+          <>
+            <Dice diceNumber={1} />
+            <Dice diceNumber={2} />
+            <Dice diceNumber={3} />
+            <Dice diceNumber={4} />
+            <Dice diceNumber={5} />
+            <Dice diceNumber={6} />
+          </>
         )}
       </div>
     )
