@@ -31,35 +31,42 @@ export default class DiceArea extends Component {
     })
   }
 
+  generateRandomDiceRoll() {
+    return {
+      key: Math.random(),
+      value: Math.ceil(Math.random() * 5)
+    }
+  }
+
   handleDiceRoll() {
+    const newRoll = [
+      this.generateRandomDiceRoll(),
+      this.generateRandomDiceRoll(),
+      this.generateRandomDiceRoll(),
+      this.generateRandomDiceRoll(),
+      this.generateRandomDiceRoll(),
+      this.generateRandomDiceRoll()
+    ]
     this.setState({
-      roll: [
-        Math.floor(Math.random() * 6),
-        Math.floor(Math.random() * 6),
-        Math.floor(Math.random() * 6),
-        Math.floor(Math.random() * 6),
-        Math.floor(Math.random() * 6),
-        Math.floor(Math.random() * 6)
-      ]})
+      roll: newRoll
+    })
   }
 
   render() {
+    let diceComponents = []
+    this.state.roll.forEach((randomDiceRoll) => {
+      diceComponents.push(
+        <Dice diceNumber={randomDiceRoll.value} key={randomDiceRoll.key} />
+      )
+    })
+    
     return (
       <div className={css.diceArea}>
         {this.state.roll.length === 0 ? (
           <button onClick={this.handleDiceRoll.bind(this)}>
             Roll!
           </button>
-        ) : (
-          <>
-            <Dice diceNumber={1} />
-            <Dice diceNumber={2} />
-            <Dice diceNumber={3} />
-            <Dice diceNumber={4} />
-            <Dice diceNumber={5} />
-            <Dice diceNumber={6} />
-          </>
-        )}
+        ) : diceComponents}
       </div>
     )
   }
