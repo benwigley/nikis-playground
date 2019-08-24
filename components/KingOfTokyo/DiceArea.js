@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import Dice from './Dice'
 
 import css from '../../styles/KingOfTokyo/DiceArea.styl'
 
@@ -51,7 +52,7 @@ export default class DiceArea extends Component {
           </button>
         ) : (
           <div className={css.diceContainer}>
-
+              <Dice diceNumber={3} />
           </div>
         )}
       </div>
