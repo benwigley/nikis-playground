@@ -10,7 +10,25 @@ export default class KingOfTokyoGame extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      turns: [],
+      activePlayerId: 3,
+      players: [
+        {
+          name: "Ben",
+          playerId: 1,
+          monsterId: 3,
+        }, {
+          name: "Niki",
+          playerId: 2,
+          monsterId: 1,
+        }, {
+          name: "Treeman",
+          playerId: 3,
+          monsterId: 2,
+        }
+      ]
+    }
   }
 
   render() {
@@ -23,20 +41,16 @@ export default class KingOfTokyoGame extends Component {
         <DiceArea />
 
         <div className={css.playerCardsContainer}>
-          <Player 
-            playerId={1} 
-            ben={'awesome'}
-            monsterCardImgUrl="/static/images/KingOfTokyo/Card---CyberBunny.png"
-            monsterAvatarImgUrl="/static/images/KingOfTokyo/Monster--CyberBunny.png" />
-          <Player 
-            playerId={2}
-            monsterCardImgUrl="/static/images/KingOfTokyo/Card---MekaDragon.png"
-            monsterAvatarImgUrl="/static/images/KingOfTokyo/Monster--MekaDragon.png"
-            active={true} />
-          <Player 
-            playerId={3}
-            monsterCardImgUrl="/static/images/KingOfTokyo/Card---XSmashTree.png"
-            monsterAvatarImgUrl="/static/images/KingOfTokyo/Monster--XSmashTree.png" />
+          <Player
+            player={this.state.players[0]}
+          />
+          <Player
+            player={this.state.players[1]}
+            active={true}
+          />
+          <Player
+            player={this.state.players[2]}
+          />
         </div>
       </div>
     )
