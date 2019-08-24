@@ -1,5 +1,6 @@
 const path = require('path')
 const nib = require('nib')
+const images = require('next-images')
 const withPlugins = require('next-compose-plugins')
 const withStylus = require('@zeit/next-stylus')
 
@@ -24,6 +25,7 @@ const nextJsConfiguration = {
 
 const nextJsPlugins = [
 
+  images,
   [withStylus, {
     // next-stylus options
     cssModules: true,

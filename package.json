@@ -7,9 +7,11 @@
   },
   "dependencies": {
     "@zeit/next-stylus": "^1.0.1",
+    "classnames": "^2.2.6",
     "foundation-stylus": "^0.9.1",
     "next": "^9.0.3",
     "next-compose-plugins": "^2.2.0",
+    "next-images": "^1.1.2",
     "next-routes": "^1.4.2",
     "nib": "^1.1.2",
     "normalize-stylus": "^1.0.1",
