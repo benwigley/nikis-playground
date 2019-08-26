@@ -38,8 +38,6 @@ class Cards extends Component {
 }
 
 Cards.propTypes = {
-  symbol: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
 }
 
 export default Cards
