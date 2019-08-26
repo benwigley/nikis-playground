@@ -19,6 +19,8 @@ class Card extends Component {
     this.setState({
       flipped: !this.state.flipped
     })
+
+    this.props.onCardFlip()
   }
 
   render() {
@@ -47,7 +49,11 @@ class Card extends Component {
 
             <div className={css.cardBack}></div>
 
-            <div className={css.cardFront}>
+            <div
+              className={css.cardFront}
+              style={{
+                color: ['♡', '♢'].includes(this.props.symbol) ? 'red' : null
+              }}>
               <div className={css.topText}>
                 <span className={css.symbol}>{this.props.symbol}</span>
                 <span className={css.number}>{this.props.number}</span>
@@ -69,6 +75,7 @@ class Card extends Component {
 Card.propTypes = {
   symbol: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
+  onCardFlip: PropTypes.func.isRequired,
 }
 
 export default Card
