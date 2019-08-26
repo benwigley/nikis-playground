@@ -26,11 +26,12 @@ class Card extends Component {
       <div className={cx(css.cardContainer)}>
 
         <div className={css.cardStats}>
-          <h4>State:</h4>
+          <h4>Card Component</h4>
+          <h5>State:</h5>
           <ul>
             <li>flipped: {this.state.flipped.toString()}<br /></li>
           </ul>
-          <h4>Props:</h4>
+          <h5>Props:</h5>
           <ul>
             <li>Symbol: {this.props.symbol}</li>
             <li>Number: {this.props.number}</li>

@@ -2,10 +2,10 @@ import { Component } from 'react'
 import Head from '../components/Head'
 import Nav from '../components/Nav'
 import '../styles/global/base.styl'
-import Card from '../components/Cards/Card'
+import Cards from '../components/Cards/Cards'
 
 
-export default class Cards extends Component {
+export default class CardsPage extends Component {
 
   componentDidMount() {
     // Set the theme for our route to Dark by adding
@@ -26,14 +26,7 @@ export default class Cards extends Component {
         <Head title="Cards" />
         <Nav />
 
-        <div style={{
-          padding: '50px'
-        }}>
-          <Card symbol="♡" number="5" />
-          <Card symbol="♢" number="2" />
-          <Card symbol="♧" number="6" />
-          <Card symbol="♤" number="10" />
-        </div>
+        <Cards />
       </div>
     )
   }
