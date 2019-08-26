@@ -9,12 +9,8 @@ class Player extends Component {
 
   constructor(props) {
     super(props)
-    console.log('props', props)
+    // console.log('props', props)
     this.state = {}
-
-    setTimeout(() => {
-      this.props.playerDidDoSomething(this.props.playerObject.playerId)
-    }, 3000)
   }
 
   getMonsterAvatarImg() {
@@ -45,9 +41,6 @@ class Player extends Component {
         [css.active]: this.props.active
       })}>
         <h3>{this.props.playerObject.name}</h3>
-
-        <p>My parent component passed me a function called 'playerDidDoSomething' into my props. In 3 seconds I will call this function.</p>
-        <p>{this.props.playerObject.didSomething}</p>
 
         {this.getMonsterAvatarImg()}
         {this.getMonsterCardImg()}

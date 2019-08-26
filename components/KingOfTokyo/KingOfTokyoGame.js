@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import _ from 'lodash'
+// import _ from 'lodash'
 
 import DiceArea from './DiceArea'
 import GameBoardArea from './GameBoardArea'
@@ -33,22 +33,6 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
-  playerDidDoSomething = (playerId) => {
-    console.log(`playerDidDoSomething has been called by playerId:${playerId}`)
-    let modifiedPlayersArray = [ ...this.state.players ]
-
-    const indexOfPlayer = _.findIndex(modifiedPlayersArray, { playerId: playerId })
-    modifiedPlayersArray[indexOfPlayer] = {
-      ...modifiedPlayersArray[indexOfPlayer],
-      didSomething: "I called 'this.props.playerDidDoSomething()', and it changed my 'didSomething' prop, and now I am rendering it to the page"
-    }
-    console.log('modifiedPlayersArray', modifiedPlayersArray)
-
-    this.setState({
-      players: modifiedPlayersArray
-    })
-  }
-
   render() {
     return (
       <div className={css.kingOfTokyoGame}>
@@ -61,7 +45,6 @@ export default class KingOfTokyoGame extends Component {
         <div className={css.playerCardsContainer}>
           <Player
             playerObject={this.state.players[0]}
-            playerDidDoSomething={this.playerDidDoSomething}
           />
           <Player
             playerObject={this.state.players[1]}
