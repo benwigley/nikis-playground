@@ -9,6 +9,7 @@
     "@zeit/next-stylus": "^1.0.1",
     "classnames": "^2.2.6",
     "foundation-stylus": "^0.9.1",
+    "lodash": "^4.17.15",
     "next": "^9.0.3",
     "next-compose-plugins": "^2.2.0",
     "next-images": "^1.1.2",

@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import _ from 'lodash'
 
 import DiceArea from './DiceArea'
 import GameBoardArea from './GameBoardArea'
@@ -10,6 +11,7 @@ export default class KingOfTokyoGame extends Component {
 
   constructor(props) {
     super(props)
+
     this.state = {
       turns: [],
       activePlayerId: 3,
@@ -31,6 +33,22 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
+  playerDidDoSomething = (playerId) => {
+    console.log(`playerDidDoSomething has been called by playerId:${playerId}`)
+    let modifiedPlayersArray = [ ...this.state.players ]
+
+    const indexOfPlayer = _.findIndex(modifiedPlayersArray, { playerId: playerId })
+    modifiedPlayersArray[indexOfPlayer] = {
+      ...modifiedPlayersArray[indexOfPlayer],
+      didSomething: "I called 'this.props.playerDidDoSomething()', and it changed my 'didSomething' prop, and now I am rendering it to the page"
+    }
+    console.log('modifiedPlayersArray', modifiedPlayersArray)
+
+    this.setState({
+      players: modifiedPlayersArray
+    })
+  }
+
   render() {
     return (
       <div className={css.kingOfTokyoGame}>
@@ -42,14 +60,15 @@ export default class KingOfTokyoGame extends Component {
 
         <div className={css.playerCardsContainer}>
           <Player
-            player={this.state.players[0]}
+            playerObject={this.state.players[0]}
+            playerDidDoSomething={this.playerDidDoSomething}
           />
           <Player
-            player={this.state.players[1]}
+            playerObject={this.state.players[1]}
             active={true}
           />
           <Player
-            player={this.state.players[2]}
+            playerObject={this.state.players[2]}
           />
         </div>
       </div>
