@@ -32,7 +32,11 @@ class Nav extends Component {
       // {
       //   href: '/mastermind',
       //   label: 'Mastermind'
-      // }
+      // },
+      {
+        href: '/cards',
+        label: 'Cards'
+      },
     ]
     return (
       links.map(link => {

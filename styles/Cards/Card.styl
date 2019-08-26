@@ -1,0 +1,67 @@
+
+.cardContainer
+  float left
+  margin-right 20px
+  ul
+    font-size 12px
+    margin-left 15px
+  h4
+    font-size 12px
+    margin-bottom 5px
+
+.cardStats
+  margin-bottom 10px
+
+.card
+  position relative
+  width 100px
+  height 141px
+  perspective 1000px
+  cursor pointer
+  &.flipped .cardFlipper
+    transform rotateY(180deg)
+
+.cardFlipper
+  transition 0.6s
+  transform-style preserve-3d
+  position relative
+
+.cardFront, .cardBack
+  width 100px
+  height 141px
+  padding 10px
+  background-color white
+  border-radius 10px
+  position absolute
+  top 0
+  left 0
+  backface-visibility hidden // hide back of pane during swap
+
+.cardFront
+  font-size 18px
+  color rgba(#000, 0.8)
+  border solid 1px rgba(#FFF, 0.4)
+  transform rotateY(180deg) // front is initially hidden
+
+.cardBack
+  background-image url('https://cdn.shopify.com/s/files/1/0200/7616/products/playing-cards-bicycle-rider-back-1_grande.png?v=1535755695')
+  background-size contain
+  transform rotateY(0deg)
+  z-index 2 // back pane is placed above front
+
+.symbol
+  display inline-block
+  margin-right 5px
+
+.number
+  display inline-block
+
+.leftText
+  position absolute
+  top 10px
+  left 10px
+
+.bottomText
+  position absolute
+  right 10px
+  bottom 10px
