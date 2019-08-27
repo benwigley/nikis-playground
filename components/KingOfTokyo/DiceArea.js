@@ -35,6 +35,10 @@ class DiceArea extends Component {
     }
   }
 
+  handleEndTurnClick = () => {
+    this.props.onEndTurnClick()
+  }
+
   areDiceHighlighted() {
     let oneOrMoreDiceAreHighlighted = false
 
@@ -86,7 +90,9 @@ class DiceArea extends Component {
               {diceComponents}
             </div>
             {this.props.rollComplete ? (
-              <button>End turn</button>
+                <button onClick={this.handleEndTurnClick}>
+                End turn
+              </button>
             ) : (
               <button onClick={this.handleRerollClick}>
                 {!this.areDiceHighlighted() ? 'Reroll!' : (
@@ -107,6 +113,7 @@ DiceArea.propTypes = {
   rollComplete: PropTypes.bool.isRequired,
   onDiceRollClick: PropTypes.func.isRequired,
   onRollCompletion: PropTypes.func.isRequired,
+  onEndTurnClick: PropTypes.func.isRequired,
 }
 
 export default DiceArea

@@ -1,5 +1,5 @@
 import { Component } from 'react'
-// import _ from 'lodash'
+import { find } from 'lodash'
 
 import helpers from '../../lib/KingOfTokyo/helpers'
 import DiceArea from './DiceArea'
@@ -18,11 +18,13 @@ export default class KingOfTokyoGame extends Component {
         name: "Ben",
         playerId: 1,
         monsterId: 3,
-      }, {
+      },
+      {
         name: "Niki",
         playerId: 2,
         monsterId: 1,
-      }, {
+      },
+      {
         name: "Treeman",
         playerId: 3,
         monsterId: 2,
@@ -64,6 +66,10 @@ export default class KingOfTokyoGame extends Component {
 
   handleRollCompletion = () => {
     console.log('handleRollCompletion')
+  }
+
+  handleEndTurnClick = () => {
+    console.log('handleEndTurnClick')
   }
 
   handleDiceRoll = (diceHighlightedStatesById={}) => {
@@ -117,6 +123,11 @@ export default class KingOfTokyoGame extends Component {
     return this.state.turns[this.state.turns.length - 1]
   }
 
+  getCurrentPlayer() {
+    const currentTurn = this.getCurrentTurn()
+    return find(this.state.players, { playerId: currentTurn.playerId })
+  }
+
   getCurrentRoll() {
     const currentTurn = this.getCurrentTurn()
     if (!currentTurn) {
@@ -137,11 +148,19 @@ export default class KingOfTokyoGame extends Component {
 
           <GameBoardArea />
 
+          {!this.getCurrentTurn().rolls.length && (
+            <p className={css.playerTurnNotice}>
+              {this.getCurrentPlayer().name}, it's your turn!
+            </p>
+          )}
+
           <DiceArea
             roll={this.getCurrentRoll()}
             rollComplete={this.getCurrentTurn().rollComplete}
             onDiceRollClick={this.handleDiceRoll}
-            onRollCompletion={this.handleRollCompletion} />
+            onRollCompletion={this.handleRollCompletion}
+            onEndTurnClick={this.handleEndTurnClick}
+          />
 
           <div className={css.playerCardsContainer}>
             <Player
