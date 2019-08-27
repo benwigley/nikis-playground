@@ -21,7 +21,19 @@ export default class DiceArea extends Component {
     })
   }
 
+  areDiceHighlighted() {
+    let oneOrMoreDiceAreHighlighted = false
+
+    this.props.roll.forEach((randomDiceRoll) => {
+      if (this.state.diceStatesById[randomDiceRoll.key]) {
+        oneOrMoreDiceAreHighlighted = true
+      }
+    })
+    return oneOrMoreDiceAreHighlighted
+  }
+
   render() {
+
     let diceComponents = []
 
     const createAndAddNewDiceComponent = (randomDiceRoll) => {
@@ -43,7 +55,18 @@ export default class DiceArea extends Component {
           <button onClick={this.props.onDiceRollClick}>
             Roll!
           </button>
-        ) : diceComponents}
+        ) : (
+          <>
+            <div className={css.diceContainer}>
+              {diceComponents}
+            </div>
+            <br />
+            <br />
+            <button>
+              {!this.areDiceHighlighted() ? 'Reroll!' : 'Keep dice and reroll!'}
+            </button>
+          </>
+        )}
       </div>
     )
   }
