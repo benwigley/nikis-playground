@@ -60,8 +60,6 @@ export default class DiceArea extends Component {
             <div className={css.diceContainer}>
               {diceComponents}
             </div>
-            <br />
-            <br />
             <button>
               {!this.areDiceHighlighted() ? 'Reroll!' : 'Keep dice and reroll!'}
             </button>
