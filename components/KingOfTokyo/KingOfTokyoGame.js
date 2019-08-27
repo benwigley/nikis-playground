@@ -2,6 +2,7 @@ import { Component } from 'react'
 import { find, indexOf } from 'lodash'
 
 import helpers from '../../lib/KingOfTokyo/helpers'
+import { diceLookup, diceValues } from '../../lib/KingOfTokyo/config'
 import DiceArea from './DiceArea'
 import GameBoardArea from './GameBoardArea'
 import Player from './Player'
@@ -84,14 +85,33 @@ export default class KingOfTokyoGame extends Component {
   }
 
   handleEndTurnClick = () => {
-    console.log('handleEndTurnClick')
+    const currentTurn = this.getCurrentTurn()
+
+    // By default, the next player in Tokyo will be the current player in Tokyo.
+    let playerInTokyoId = currentTurn.playerInTokyoId
 
     // get the final roll and if there is no
     // player in Tokyo, and the current roll
     // has attacks, put the player in Tokyo.
-    // const finalRoll = this.getCurrentTurn().roll
+    const finalRoll = currentTurn.rolls[currentTurn.rolls.length - 1]
 
-    this.nextPlayersTurn()
+    let rollContainsAttacks = false
+    finalRoll.forEach(diceRoll => {
+      if (diceLookup[diceRoll.value] === diceValues.ATTACK) {
+        rollContainsAttacks = true
+      }
+    })
+
+    if (rollContainsAttacks) {
+      if (!currentTurn.playerInTokyoId) {
+        playerInTokyoId = currentTurn.playerId
+      } else {
+        // TODO: Ask the current player in Tokyo, if they want to relinquish it
+        //       But only if they were actually attacked.
+      }
+    }
+
+    this.nextPlayersTurn(playerInTokyoId)
   }
 
   handleDiceRoll = (diceHighlightedStatesById={}) => {
