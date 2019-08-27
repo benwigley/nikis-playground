@@ -9,9 +9,7 @@ class Dice extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      highlighted: false
-    }
+    this.state = {}
   }
 
   render() {
@@ -53,7 +51,7 @@ class Dice extends Component {
       <div
         className={cx(css.dice, {
           [css.highlightable]: this.props.highlightable,
-          [css.highlighted]: this.state.highlighted,
+          [css.highlighted]: this.props.highlighted,
         })}
         onClick={this.handleClick}>
         {diceImg}
@@ -62,17 +60,18 @@ class Dice extends Component {
   }
 
   handleClick = () => {
-    this.setState({
-      highlighted: !this.state.highlighted
-    })
-    console.log(this.state.highlighted)
+    // Tell the parent component a click happened
+    this.props.onDiceClick(this.props.diceId)
   }
 
 }
 
 Dice.propTypes = {
+  diceId: PropTypes.number.isRequired,
   diceNumber: PropTypes.number.isRequired,
+  highlighted: PropTypes.bool,
   highlightable: PropTypes.bool.isRequired,
+  onDiceClick: PropTypes.func.isRequired,
 }
 
 export default Dice

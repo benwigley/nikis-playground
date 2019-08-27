@@ -8,7 +8,17 @@ export default class DiceArea extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      diceStatesById: {}
+    }
+  }
+
+  handleDiceClick = (diceId) => {
+    let modifiedDiceStatesById = { ...this.state.diceStatesById }
+    modifiedDiceStatesById[diceId] = !modifiedDiceStatesById[diceId]
+    this.setState({
+      diceStatesById: modifiedDiceStatesById
+    })
   }
 
   render() {
@@ -18,7 +28,10 @@ export default class DiceArea extends Component {
       diceComponents.push(
         <Dice
           diceNumber={randomDiceRoll.value}
+          highlighted={this.state.diceStatesById[randomDiceRoll.key]}
           highlightable={true}
+          onDiceClick={this.handleDiceClick}
+          diceId={randomDiceRoll.key}
           key={randomDiceRoll.key} />
       )
     }
