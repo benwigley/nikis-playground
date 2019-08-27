@@ -1,6 +1,7 @@
 import { Component } from 'react'
 // import _ from 'lodash'
 
+import helpers from '../../lib/KingOfTokyo/helpers'
 import DiceArea from './DiceArea'
 import GameBoardArea from './GameBoardArea'
 import Player from './Player'
@@ -15,7 +16,6 @@ export default class KingOfTokyoGame extends Component {
     // set the default state of our game
     this.state = {
       turns: [],
-      activePlayerId: 3,
       players: [
         {
           name: "Ben",
@@ -64,29 +64,19 @@ export default class KingOfTokyoGame extends Component {
     let newRoll = []
     var times = 6
     for (var i = 0; i < times; i++) {
-      newRoll.push(this.generateRandomDiceRoll())
+      newRoll.push(helpers.generateRandomDiceRoll())
     }
 
     // Clone current turns array
     let newTurnsArray = [ ...this.state.turns ]
-
     // Find and clone the current turn
     let currentTurn = { ...newTurnsArray[newTurnsArray.length - 1] }
-
     // Add a new roll to the current turn's rolls array
     currentTurn.rolls.push(newRoll)
-
     // Replace the currentTurn
     newTurnsArray[newTurnsArray.length - 1] = currentTurn
-
+    // Update the turns state with our modified turns
     this.setState({ turns: newTurnsArray })
-  }
-
-  generateRandomDiceRoll() {
-    return {
-      key: Math.random(),
-      value: Math.ceil(Math.random() * 5)
-    }
   }
 
   getCurrentTurn() {
