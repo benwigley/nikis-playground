@@ -9,15 +9,28 @@ export default class DiceArea extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      diceStatesById: {}
+      diceHighlightedStatesById: {}
     }
   }
 
   handleDiceClick = (diceId) => {
-    let modifiedDiceStatesById = { ...this.state.diceStatesById }
-    modifiedDiceStatesById[diceId] = !modifiedDiceStatesById[diceId]
+    let modifiedDiceHighlightedStatesById = { ...this.state.diceHighlightedStatesById }
+    modifiedDiceHighlightedStatesById[diceId] = !modifiedDiceHighlightedStatesById[diceId]
     this.setState({
-      diceStatesById: modifiedDiceStatesById
+      diceHighlightedStatesById: modifiedDiceHighlightedStatesById
+    })
+  }
+
+  handleRerollClick = () => {
+    if (this.areDiceHighlighted()) {
+      console.log('keep dice and handle Reroll')
+      this.props.onDiceRollClick(this.state.diceHighlightedStatesById)
+    } else {
+      console.log('reroll dice')
+      this.props.onDiceRollClick()
+    }
+    this.setState({
+      diceHighlightedStatesById: {}
     })
   }
 
@@ -25,7 +38,7 @@ export default class DiceArea extends Component {
     let oneOrMoreDiceAreHighlighted = false
 
     this.props.roll.forEach((randomDiceRoll) => {
-      if (this.state.diceStatesById[randomDiceRoll.key]) {
+      if (this.state.diceHighlightedStatesById[randomDiceRoll.key]) {
         oneOrMoreDiceAreHighlighted = true
       }
     })
@@ -40,7 +53,7 @@ export default class DiceArea extends Component {
       diceComponents.push(
         <Dice
           diceNumber={randomDiceRoll.value}
-          highlighted={this.state.diceStatesById[randomDiceRoll.key]}
+          highlighted={this.state.diceHighlightedStatesById[randomDiceRoll.key]}
           highlightable={true}
           onDiceClick={this.handleDiceClick}
           diceId={randomDiceRoll.key}
@@ -60,7 +73,7 @@ export default class DiceArea extends Component {
             <div className={css.diceContainer}>
               {diceComponents}
             </div>
-            <button>
+            <button onClick={this.handleRerollClick}>
               {!this.areDiceHighlighted() ? 'Reroll!' : 'Keep dice and reroll!'}
             </button>
           </>
