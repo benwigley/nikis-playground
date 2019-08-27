@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { find } from 'lodash'
+import { find, indexOf } from 'lodash'
 
 import helpers from '../../lib/KingOfTokyo/helpers'
 import DiceArea from './DiceArea'
@@ -25,7 +25,7 @@ export default class KingOfTokyoGame extends Component {
         monsterId: 1,
       },
       {
-        name: "Treeman",
+        name: "Boogy man",
         playerId: 3,
         monsterId: 2,
       }
@@ -35,34 +35,49 @@ export default class KingOfTokyoGame extends Component {
 
     // kick off the game with a starting turn for a random player
     const randomPlayer = defaultPlayers[Math.floor((defaultPlayers.length - 1) * Math.random())]
-    defaultTurns.push(this.createNewTurn(randomPlayer.playerId))
+    defaultTurns.push(this.createNewTurn(null, randomPlayer.playerId))
 
     // set the default state of our game
     this.state = {
       turns: defaultTurns,
-      players: defaultPlayers
+      players: defaultPlayers,
     }
   }
 
-  createNewTurn(playerId) {
+  createNewTurn(playerInTokyoId =null, playerId=null) {
+
+    if (!playerId) {
+      // We still have access to the current turn,
+      // even though we are about to create a new one.
+      const previousPlayer = this.getCurrentPlayer()
+      const indexOfPreviousPlayer = indexOf(this.state.players, previousPlayer)
+      let indexOfNextPlayer = indexOfPreviousPlayer + 1
+      if (!this.state.players[indexOfNextPlayer]) {
+        indexOfNextPlayer = 0
+      }
+      const nextPlayer = this.state.players[indexOfNextPlayer]
+      playerId = nextPlayer.playerId
+    }
+
     return {
-      playerId,
+      playerId: playerId,
+      playerInTokyoId: playerInTokyoId,
+      playerRelinquishedTokyo: false,
       rollComplete: false,
-      rolls: []
+      rolls: [],
     }
   }
 
-  // TODO: figure out which player's turn is next
-  // nextPlayersTurn() {
-  //   this.setState((prevProps) => {
-  //     return {
-  //       turns: [
-  //         ...this.state.turns,
-  //         createNewTurn(somePlayerId)
-  //       ]
-  //     }
-  //   })
-  // }
+  nextPlayersTurn(playerInTokyoId) {
+    this.setState(prevState => {
+      return {
+        turns: [
+          ...prevState.turns,
+          this.createNewTurn(playerInTokyoId)
+        ]
+      }
+    })
+  }
 
   handleRollCompletion = () => {
     console.log('handleRollCompletion')
@@ -70,6 +85,13 @@ export default class KingOfTokyoGame extends Component {
 
   handleEndTurnClick = () => {
     console.log('handleEndTurnClick')
+
+    // get the final roll and if there is no
+    // player in Tokyo, and the current roll
+    // has attacks, put the player in Tokyo.
+    // const finalRoll = this.getCurrentTurn().roll
+
+    this.nextPlayersTurn()
   }
 
   handleDiceRoll = (diceHighlightedStatesById={}) => {
