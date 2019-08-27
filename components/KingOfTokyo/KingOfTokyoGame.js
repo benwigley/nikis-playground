@@ -124,25 +124,27 @@ export default class KingOfTokyoGame extends Component {
   render() {
     return (
       <div className={css.kingOfTokyoGame}>
-        <h3>King of Tokyo</h3>
+        <div className={css.kingOfTokyoGameInner}>
+          <h3>King of Tokyo</h3>
 
-        <GameBoardArea />
+          <GameBoardArea />
 
-        <DiceArea 
-          roll={this.getCurrentRoll()}
-          onDiceRollClick={this.handleDiceRoll} />
+          <DiceArea
+            roll={this.getCurrentRoll()}
+            onDiceRollClick={this.handleDiceRoll} />
 
-        <div className={css.playerCardsContainer}>
-          <Player
-            playerObject={this.state.players[0]}
-          />
-          <Player
-            playerObject={this.state.players[1]}
-            active={true}
-          />
-          <Player
-            playerObject={this.state.players[2]}
-          />
+          <div className={css.playerCardsContainer}>
+            <Player
+              playerObject={this.state.players[0]}
+            />
+            <Player
+              playerObject={this.state.players[1]}
+              active={true}
+            />
+            <Player
+              playerObject={this.state.players[2]}
+            />
+          </div>
         </div>
       </div>
     )
