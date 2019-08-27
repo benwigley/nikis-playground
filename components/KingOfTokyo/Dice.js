@@ -9,7 +9,9 @@ class Dice extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      highlighted: false
+    }
   }
 
   render() {
@@ -45,17 +47,32 @@ class Dice extends Component {
       <img src={diceImgUrl} alt={altText} />
     )
 
+
+
     return (
-      <div className={cx(css.dice)}>
+      <div
+        className={cx(css.dice, {
+          [css.highlightable]: this.props.highlightable,
+          [css.highlighted]: this.state.highlighted,
+        })}
+        onClick={this.handleClick}>
         {diceImg}
       </div>
     )
+  }
+
+  handleClick = () => {
+    this.setState({
+      highlighted: !this.state.highlighted
+    })
+    console.log(this.state.highlighted)
   }
 
 }
 
 Dice.propTypes = {
   diceNumber: PropTypes.number.isRequired,
+  highlightable: PropTypes.bool.isRequired,
 }
 
 export default Dice

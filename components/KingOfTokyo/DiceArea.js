@@ -16,11 +16,14 @@ export default class DiceArea extends Component {
 
     const createAndAddNewDiceComponent = (randomDiceRoll) => {
       diceComponents.push(
-        <Dice diceNumber={randomDiceRoll.value} key={randomDiceRoll.key} />
+        <Dice
+          diceNumber={randomDiceRoll.value}
+          highlightable={true}
+          key={randomDiceRoll.key} />
       )
     }
     this.props.roll.forEach(createAndAddNewDiceComponent)
-    
+
     return (
       <div className={css.diceArea}>
         {this.props.roll.length === 0 ? (
