@@ -26,9 +26,6 @@ export default class DiceArea extends Component {
     this.state = {
       roll: []
     }
-    this.state.roll.forEach(dieNumber => {
-      console.log('thing', DICE_LOOKUP[dieNumber])
-    })
   }
 
   generateRandomDiceRoll() {
@@ -38,15 +35,12 @@ export default class DiceArea extends Component {
     }
   }
 
-  handleDiceRoll() {
-    const newRoll = [
-      this.generateRandomDiceRoll(),
-      this.generateRandomDiceRoll(),
-      this.generateRandomDiceRoll(),
-      this.generateRandomDiceRoll(),
-      this.generateRandomDiceRoll(),
-      this.generateRandomDiceRoll()
-    ]
+  handleDiceRoll = () => {
+    let newRoll = []
+    var times = 6
+    for (var i = 0; i < times; i++) {
+      newRoll.push(this.generateRandomDiceRoll())
+    }
     this.setState({
       roll: newRoll
     })
@@ -54,16 +48,18 @@ export default class DiceArea extends Component {
 
   render() {
     let diceComponents = []
-    this.state.roll.forEach((randomDiceRoll) => {
+
+    const createAndAddNewDiceComponent = (randomDiceRoll) => {
       diceComponents.push(
         <Dice diceNumber={randomDiceRoll.value} key={randomDiceRoll.key} />
       )
-    })
+    }
+    this.state.roll.forEach(createAndAddNewDiceComponent)
     
     return (
       <div className={css.diceArea}>
         {this.state.roll.length === 0 ? (
-          <button onClick={this.handleDiceRoll.bind(this)}>
+          <button onClick={this.handleDiceRoll}>
             Roll!
           </button>
         ) : diceComponents}

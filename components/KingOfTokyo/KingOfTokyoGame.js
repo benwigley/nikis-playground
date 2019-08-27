@@ -12,6 +12,7 @@ export default class KingOfTokyoGame extends Component {
   constructor(props) {
     super(props)
 
+    // set the default state of our game
     this.state = {
       turns: [],
       activePlayerId: 3,
@@ -31,6 +32,29 @@ export default class KingOfTokyoGame extends Component {
         }
       ]
     }
+  }
+
+  componentDidMount() {
+    // kick off the game
+    const randomPlayer = this.state.players[Math.floor(this.state.players.length * Math.random())]
+    this.createNewTurn(randomPlayer.playerId)
+  }
+
+  createNewTurn(playerId) {
+    this.setState((prevProps) => {
+      return {
+        turns: [
+          ...this.state.turns,
+
+          // The new turn we're going to add to the turns array
+          {
+            playerId,
+            rollComplete: false,
+            rolls: []
+          },
+        ]
+      }
+    })
   }
 
   render() {
