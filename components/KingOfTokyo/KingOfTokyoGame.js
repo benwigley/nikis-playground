@@ -7,22 +7,6 @@ import Player from './Player'
 import css from '../../styles/KingOfTokyo/KingOfTokyoGame.styl'
 
 
-const ONE = 'one'
-const TWO = 'two'
-const THREE = 'three'
-const HEART = 'heart'
-const ENERGY = 'energy'
-const ATTACK = 'attack'
-
-const DICE_LOOKUP = [
-  ONE,
-  TWO,
-  THREE,
-  HEART,
-  ENERGY,
-  ATTACK,
-]
-
 export default class KingOfTokyoGame extends Component {
 
   constructor(props) {
