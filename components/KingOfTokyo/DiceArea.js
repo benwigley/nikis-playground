@@ -1,10 +1,11 @@
 import { Component } from 'react'
+import PropTypes from 'prop-types'
 import Dice from './Dice'
 
 import css from '../../styles/KingOfTokyo/DiceArea.styl'
 
 
-export default class DiceArea extends Component {
+class DiceArea extends Component {
 
   constructor(props) {
     super(props)
@@ -22,27 +23,38 @@ export default class DiceArea extends Component {
   }
 
   handleRerollClick = () => {
-    if (this.areDiceHighlighted()) {
-      console.log('keep dice and handle Reroll')
+    if (this.areAllDiceHighlighted()) {
+      // Tell the parent component that we are finished rolling
+      this.props.onRollCompletion()
+    } else if (this.areDiceHighlighted()) {
+      // Reroll only the dice that aren't highlighted
       this.props.onDiceRollClick(this.state.diceHighlightedStatesById)
     } else {
-      console.log('reroll dice')
+      // Reroll all dice
       this.props.onDiceRollClick()
     }
-    this.setState({
-      diceHighlightedStatesById: {}
-    })
   }
 
   areDiceHighlighted() {
     let oneOrMoreDiceAreHighlighted = false
 
-    this.props.roll.forEach((randomDiceRoll) => {
-      if (this.state.diceHighlightedStatesById[randomDiceRoll.key]) {
+    this.props.roll.forEach(diceRoll => {
+      if (this.state.diceHighlightedStatesById[diceRoll.key]) {
         oneOrMoreDiceAreHighlighted = true
       }
     })
     return oneOrMoreDiceAreHighlighted
+  }
+
+  areAllDiceHighlighted() {
+    let allDiceAreHighlighted = true
+
+    this.props.roll.forEach(diceRoll => {
+      if (!this.state.diceHighlightedStatesById[diceRoll.key]) {
+        allDiceAreHighlighted = false
+      }
+    })
+    return allDiceAreHighlighted
   }
 
   render() {
@@ -54,7 +66,7 @@ export default class DiceArea extends Component {
         <Dice
           diceNumber={randomDiceRoll.value}
           highlighted={this.state.diceHighlightedStatesById[randomDiceRoll.key]}
-          highlightable={true}
+          highlightable={!this.props.rollComplete}
           onDiceClick={this.handleDiceClick}
           diceId={randomDiceRoll.key}
           key={randomDiceRoll.key} />
@@ -73,9 +85,15 @@ export default class DiceArea extends Component {
             <div className={css.diceContainer}>
               {diceComponents}
             </div>
-            <button onClick={this.handleRerollClick}>
-              {!this.areDiceHighlighted() ? 'Reroll!' : 'Keep dice and reroll!'}
-            </button>
+            {this.props.rollComplete ? (
+              <button>End turn</button>
+            ) : (
+              <button onClick={this.handleRerollClick}>
+                {!this.areDiceHighlighted() ? 'Reroll!' : (
+                  this.areAllDiceHighlighted() ? 'Keep all and finish rolling' : 'Keep dice and reroll!'
+                )}
+              </button>
+            )}
           </>
         )}
       </div>
@@ -83,3 +101,12 @@ export default class DiceArea extends Component {
   }
 
 }
+
+DiceArea.propTypes = {
+  roll: PropTypes.array.isRequired,
+  rollComplete: PropTypes.bool.isRequired,
+  onDiceRollClick: PropTypes.func.isRequired,
+  onRollCompletion: PropTypes.func.isRequired,
+}
+
+export default DiceArea

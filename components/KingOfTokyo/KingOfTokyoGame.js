@@ -13,48 +13,57 @@ export default class KingOfTokyoGame extends Component {
   constructor(props) {
     super(props)
 
+    const defaultPlayers = [
+      {
+        name: "Ben",
+        playerId: 1,
+        monsterId: 3,
+      }, {
+        name: "Niki",
+        playerId: 2,
+        monsterId: 1,
+      }, {
+        name: "Treeman",
+        playerId: 3,
+        monsterId: 2,
+      }
+    ]
+
+    let defaultTurns = []
+
+    // kick off the game with a starting turn for a random player
+    const randomPlayer = defaultPlayers[Math.floor((defaultPlayers.length - 1) * Math.random())]
+    defaultTurns.push(this.createNewTurn(randomPlayer.playerId))
+
     // set the default state of our game
     this.state = {
-      turns: [],
-      players: [
-        {
-          name: "Ben",
-          playerId: 1,
-          monsterId: 3,
-        }, {
-          name: "Niki",
-          playerId: 2,
-          monsterId: 1,
-        }, {
-          name: "Treeman",
-          playerId: 3,
-          monsterId: 2,
-        }
-      ]
+      turns: defaultTurns,
+      players: defaultPlayers
     }
   }
 
-  componentDidMount() {
-    // kick off the game
-    const randomPlayer = this.state.players[Math.floor(this.state.players.length * Math.random())]
-    this.createNewTurn(randomPlayer.playerId)
+  createNewTurn(playerId) {
+    return {
+      playerId,
+      rollComplete: false,
+      rolls: []
+    }
   }
 
-  createNewTurn(playerId) {
-    this.setState((prevProps) => {
-      return {
-        turns: [
-          ...this.state.turns,
+  // TODO: figure out which player's turn is next
+  // nextPlayersTurn() {
+  //   this.setState((prevProps) => {
+  //     return {
+  //       turns: [
+  //         ...this.state.turns,
+  //         createNewTurn(somePlayerId)
+  //       ]
+  //     }
+  //   })
+  // }
 
-          // The new turn we're going to add to the turns array
-          {
-            playerId,
-            rollComplete: false,
-            rolls: []
-          },
-        ]
-      }
-    })
+  handleRollCompletion = () => {
+    console.log('handleRollCompletion')
   }
 
   handleDiceRoll = (diceHighlightedStatesById={}) => {
@@ -89,10 +98,19 @@ export default class KingOfTokyoGame extends Component {
 
     // Add a new roll to the current turn's rolls array
     currentTurn.rolls.push(newRoll)
+
+    if (currentTurn.rolls.length > 2) {
+      // If the user has just rolled their final roll,
+      // tell the parent that we are finished rolling.
+      currentTurn.rollComplete = true
+    }
+
     // Replace the currentTurn
     newTurnsArray[newTurnsArray.length - 1] = currentTurn
     // Update the turns state with our modified turns
-    this.setState({ turns: newTurnsArray })
+    this.setState({
+      turns: newTurnsArray
+    })
   }
 
   getCurrentTurn() {
@@ -121,18 +139,22 @@ export default class KingOfTokyoGame extends Component {
 
           <DiceArea
             roll={this.getCurrentRoll()}
-            onDiceRollClick={this.handleDiceRoll} />
+            rollComplete={this.getCurrentTurn().rollComplete}
+            onDiceRollClick={this.handleDiceRoll}
+            onRollCompletion={this.handleRollCompletion} />
 
           <div className={css.playerCardsContainer}>
             <Player
               playerObject={this.state.players[0]}
+              active={this.getCurrentTurn().playerId === this.state.players[0].playerId}
             />
             <Player
               playerObject={this.state.players[1]}
-              active={true}
+              active={this.getCurrentTurn().playerId === this.state.players[1].playerId}
             />
             <Player
               playerObject={this.state.players[2]}
+              active={this.getCurrentTurn().playerId === this.state.players[2].playerId}
             />
           </div>
         </div>
