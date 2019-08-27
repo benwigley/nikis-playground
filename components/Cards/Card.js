@@ -7,8 +7,8 @@ import css from '../../styles/Cards/Card.styl'
 
 class Card extends Component {
 
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
 
     this.state = {
       flipped: false
@@ -24,20 +24,26 @@ class Card extends Component {
   }
 
   render() {
+    // console.log(this.props)
     return (
       <div className={cx(css.cardContainer)}>
 
         <div className={css.cardStats}>
           <h4>Card Component</h4>
           <h5>State:</h5>
-          <ul>
-            <li>flipped: {this.state.flipped.toString()}<br /></li>
-          </ul>
+          <pre>
+            {'{'}<br />
+            &nbsp;flipped: {this.state.flipped.toString()}<br />
+            {'}'}
+          </pre>
           <h5>Props:</h5>
-          <ul>
-            <li>Symbol: {this.props.symbol}</li>
-            <li>Number: {this.props.number}</li>
-          </ul>
+          <pre>
+            {'{'}<br />
+            &nbsp;symbol: {this.props.symbol},<br />
+            &nbsp;number: {this.props.number},<br />
+            &nbsp;onCardFlip: function<br />
+            {'}'}<br />
+          </pre>
         </div>
 
         <div

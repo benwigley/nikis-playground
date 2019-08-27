@@ -7,29 +7,34 @@ import Card from './Card'
 
 class Cards extends Component {
 
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
 
     this.state = {
       cardObjects: [
         {
+          key: 1,
           symbol: "♡",
           number: "5"
         },
         {
-          symbol: "♢",
-          number: "10"
-        },
-        {
+          key: 3,
           symbol: "♧",
           number: "2"
         },
-        {
-          symbol: "♤",
-          number: "8"
-        },
+        // {
+        //   key: 2,
+        //   symbol: "♢",
+        //   number: "10"
+        // },
+        // {
+        //   key: 4,
+        //   symbol: "♤",
+        //   number: "9"
+        // },
       ],
-      flipCount: 0
+      flipCount: 0,
+      somethingElse: false
     }
   }
 
@@ -41,30 +46,44 @@ class Cards extends Component {
           <pre>
             cardObjects: [<br />
             {this.state.cardObjects.map((cardObj) => {
-              return <>&nbsp;{JSON.stringify(cardObj)}<br /></>
+              return <div key={cardObj.key}>&nbsp;{JSON.stringify(cardObj)}<br /></div>
             })}
-            ]<br />
-            flipCount: {this.state.flipCount}
+            ],<br />
+            flipCount: {this.state.flipCount},<br />
+            somethingElse: {this.state.somethingElse.toString()}
           </pre>
         </div>
 
         <h5>Props:</h5>
         <div className={css.cardsStateAndPropsInner}>
           <pre>
-            {'{}'}
+            {JSON.stringify(this.props)}
           </pre>
         </div>
       </div>
     )
   }
 
-  onCardFlip = () => {
+  handleCardFlip = () => {
     this.setState({
-      flipCount: this.state.flipCount + 1
+      flipCount: this.state.flipCount + 1,
+      somethingElse: true
     })
   }
 
   render() {
+
+    const createCardComponentFromCardObject = (cardObject) => {
+      return (
+        <Card
+          symbol={cardObject.symbol}
+          number={cardObject.number}
+          onCardFlip={this.handleCardFlip} />
+      )
+    }
+    
+    const items = this.state.cardObjects.map(createCardComponentFromCardObject)
+
     return (
       <div className={cx(css.cards)}>
         <h4>Cards component</h4>
@@ -72,10 +91,7 @@ class Cards extends Component {
         {this.renderCardsStateAndProps()}
 
         <div>
-          <Card symbol="♡" number="5" onCardFlip={this.onCardFlip} />
-          <Card symbol="♢" number="2" onCardFlip={this.onCardFlip} />
-          <Card symbol="♧" number="6" onCardFlip={this.onCardFlip} />
-          <Card symbol="♤" number="10" onCardFlip={this.onCardFlip} />
+          {items}
         </div>
       </div>
     )
