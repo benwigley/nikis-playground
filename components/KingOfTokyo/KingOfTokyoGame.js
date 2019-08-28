@@ -14,36 +14,32 @@ export default class KingOfTokyoGame extends Component {
   constructor(props) {
     super(props)
 
-    const defaultPlayers = [
-      {
-        name: "Ben",
-        playerId: 1,
-        monsterId: 3,
-      },
-      {
-        name: "Niki",
-        playerId: 2,
-        monsterId: 1,
-      },
-      {
-        name: "Boogy man",
-        playerId: 3,
-        monsterId: 2,
-      }
-    ]
-
-    let defaultTurns = []
-
-    // kick off the game with a starting turn for a random player
-    const randomPlayer = defaultPlayers[Math.floor((defaultPlayers.length - 1) * Math.random())]
-    defaultTurns.push(this.createNewTurn(null, randomPlayer.playerId))
-
     // set the default state of our game
     this.state = {
-      turns: defaultTurns,
-      players: defaultPlayers,
+      turns: [],
+      players: [
+        {
+          name: "Ben",
+          playerId: 1,
+          monsterId: 3,
+        },
+        {
+          name: "Niki",
+          playerId: 2,
+          monsterId: 1,
+        },
+        {
+          name: "Boogy man",
+          playerId: 3,
+          monsterId: 2,
+        }
+      ],
       gameStarted: false,
     }
+  }
+
+  componentDidMount() {
+    this.handleStartClick()
   }
 
   createNewTurn(playerInTokyoId =null, playerId=null) {
@@ -82,7 +78,16 @@ export default class KingOfTokyoGame extends Component {
   }
 
   handleStartClick = () => {
-    console.log('handleStartClick')
+    // console.log('handleStartClick')
+    if (this.state.turns.length) return
+
+    // kick off the game with a starting turn for a random player
+    const randomPlayer = this.state.players[Math.floor((this.state.players.length - 1) * Math.random())]
+    
+    this.setState({
+      turns: [this.createNewTurn(null, randomPlayer.playerId)],
+      gameStarted: true
+    })
   }
 
   handleRollCompletion = () => {
