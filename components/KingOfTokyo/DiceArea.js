@@ -25,6 +25,7 @@ class DiceArea extends Component {
   handleRerollClick = () => {
     if (this.areAllDiceHighlighted()) {
       // Tell the parent component that we are finished rolling
+      console.log('onRollCompletion')
       this.props.onRollCompletion()
     } else if (this.areDiceHighlighted()) {
       // Reroll only the dice that aren't highlighted

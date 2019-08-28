@@ -54,6 +54,7 @@ class Player extends Component {
 
 Player.propTypes = {
   active: PropTypes.bool,
+  isPlayerDead: PropTypes.bool,
   hideMonsterAvatar: PropTypes.bool,
   playerObject: PropTypes.object.isRequired,
   stats: PropTypes.object.isRequired,
