@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import MonsterAvatar from './MonsterAvatar'
 
 import css from '../../styles/KingOfTokyo/Player.styl'
 
@@ -11,17 +12,6 @@ class Player extends Component {
     super(props)
     // console.log('props', props)
     this.state = {}
-  }
-
-  getMonsterAvatarImg() {
-    switch (this.props.playerObject.monsterId) {
-      case 1:
-        return <img src="/static/images/KingOfTokyo/Monster--CyberBunny.png" alt="Bunny Monster" />
-      case 2:
-        return <img src="/static/images/KingOfTokyo/Monster--MekaDragon.png" alt="Dragon Monster" />
-      case 3:
-        return <img src="/static/images/KingOfTokyo/Monster--XSmashTree.png" alt="Tree Monster" />
-    }
   }
 
   getMonsterCardImg() {
@@ -42,7 +32,11 @@ class Player extends Component {
       })}>
         <h3>{this.props.playerObject.name}</h3>
 
-        {this.getMonsterAvatarImg()}
+        <div className={css.monsterAvatarContainer}>
+          {!this.props.hideMonsterAvatar && (
+            <MonsterAvatar monsterId={this.props.playerObject.monsterId} />
+          )}
+        </div>
         {this.getMonsterCardImg()}
       </div>
     )
@@ -52,6 +46,7 @@ class Player extends Component {
 
 Player.propTypes = {
   active: PropTypes.bool,
+  hideMonsterAvatar: PropTypes.bool.isRequired,
   playerObject: PropTypes.object.isRequired
 }
 

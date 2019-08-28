@@ -40,12 +40,12 @@ export default class KingOfTokyoGame extends Component {
 
   async componentDidMount() {
 
-    // Development code to speed up game testing
-    await this.handleStartClick()
-    await this.handleDiceRoll()
-    await this.handleDiceRoll()
-    await this.handleDiceRoll()
-    this.handleEndTurnClick()
+    // // Development code to speed up game testing
+    // await this.handleStartClick()
+    // await this.handleDiceRoll()
+    // await this.handleDiceRoll()
+    // await this.handleDiceRoll()
+    // this.handleEndTurnClick()
   }
 
   createNewTurn(playerInTokyoId =null, playerId=null) {
@@ -204,6 +204,19 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
+  getPlayerComponents() {
+    return this.state.players.map(playerObject => {
+      const playerInTokyo = this.getPlayerInTokyo()
+      return (
+        <Player
+          playerObject={playerObject}
+          hideMonsterAvatar={playerInTokyo && playerInTokyo.playerId === playerObject.playerId}
+          active={this.getCurrentTurn().playerId === playerObject.playerId}
+        />
+      )
+    })
+  }
+
   render() {
     return (
       <div className={css.kingOfTokyoGame}>
@@ -242,18 +255,7 @@ export default class KingOfTokyoGame extends Component {
               />
 
               <div className={css.playerCardsContainer}>
-                <Player
-                  playerObject={this.state.players[0]}
-                  active={this.getCurrentTurn().playerId === this.state.players[0].playerId}
-                />
-                <Player
-                  playerObject={this.state.players[1]}
-                  active={this.getCurrentTurn().playerId === this.state.players[1].playerId}
-                />
-                <Player
-                  playerObject={this.state.players[2]}
-                  active={this.getCurrentTurn().playerId === this.state.players[2].playerId}
-                />
+                {this.getPlayerComponents()}
               </div>
             </>
           )}
