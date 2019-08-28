@@ -6,9 +6,28 @@
   overflow hidden
   border-radius 10px
   text-align center
+  &.gameOver:after
+    content ''
+    display block
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    background-color rgba(#000, .5)
+    z-index 1
 
 .monsterAvatar
   position absolute
   left 64px
   bottom 70px
   max-width 220px
+
+.winningMessage
+  position absolute
+  top 50%
+  width 100%
+  margin-top -5px
+  text-shadow 1px 1px 5px #000
+  font-size 30px
+  z-index 2

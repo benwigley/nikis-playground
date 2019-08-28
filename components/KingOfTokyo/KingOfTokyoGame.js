@@ -11,7 +11,7 @@ import css from '../../styles/KingOfTokyo/KingOfTokyoGame.styl'
 
 
 // TODO
-// - Be able to relinquish Tokyo
+// - Make a player win if the go over 20 victory points
 // - Move complex game logic into helpers
 
 
@@ -32,6 +32,7 @@ export default class KingOfTokyoGame extends Component {
         energy: 0,
         victoryPoints: 0,
       },
+      winningPlayerId: null,
       turns: [],
       players: [
         {
@@ -79,7 +80,6 @@ export default class KingOfTokyoGame extends Component {
       if (activePlayers.length === 1) {
         throw new Error("You can't move onto the next turn. There is only one player left!")
       }
-      console.log({ activePlayers })
 
       const indexOfPreviousPlayer = indexOf(activePlayers, previousPlayer)
       let indexOfNextPlayer = indexOfPreviousPlayer + 1
@@ -114,7 +114,22 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
+  checkForPlayerVictory() {
+    const activePlayers = this.state.players.filter(playerObject => {
+      return !this.isPlayerDead(playerObject.playerId)
+    })
+    if (activePlayers.length === 1) {
+      this.setState({
+        winningPlayerId: activePlayers[0].id
+      })
+      return true
+    }
+    return false
+  }
+
   nextPlayersTurn() {
+    if (this.checkForPlayerVictory()) return
+
     this.setState(prevState => {
       return {
         turns: [
@@ -238,8 +253,12 @@ export default class KingOfTokyoGame extends Component {
           // If this player is in Tokyo, then yes
           changesForPlayer.health = -(diceTotalsLookup[diceFaceKeys.ATTACK])
 
-          // Ask the current player in Tokyo if they want to relinquish control
-          modifiedCurrentTurn.playerInTokyoPendingLeaveDecision = true
+          // Ask the current player in Tokyo if they want to relinquish control,
+          // but only if their total health is above 0 (they're not dead)
+          const totalHealth = currentStatsForPlayer.health + changesForPlayer.health
+          if (totalHealth > 0) {
+            modifiedCurrentTurn.playerInTokyoPendingLeaveDecision = true
+          }
           console.log('Putting game into pending state, and asking if the player in Tokyo wants to leave')
         }
         // If the player whose turn it currently is in Tokyo, then yes
@@ -265,6 +284,7 @@ export default class KingOfTokyoGame extends Component {
 
       // If the current player was, and is still in Tokyo, give 
       // them 2 victoryPoints for having an entire round in Tokyo.
+      // TODO: Move this to happen at the start of a players turn in Tkyo
       else if (modifiedCurrentTurn.playerInTokyoId === modifiedCurrentTurn.playerId) {
         modifiedCurrentTurn.playerStatsChanges[modifiedCurrentTurn.playerId].victoryPoints += 2
         console.log('Current player was already in Tokyo, and gets 2 points')
@@ -363,6 +383,13 @@ export default class KingOfTokyoGame extends Component {
     return this.getStatsForPlayerId(playerId).health <= 0
   }
 
+  getWinningPlayer() {
+    if (this.state.winningPlayerId) {
+      return find(this.state.players, { playerId: this.state.winningPlayerId })
+    }
+    return null
+  }
+
   getPlayerInTokyo() {
     const currentTurn = this.getCurrentTurn()
     if (!currentTurn || !currentTurn.playerInTokyoId) return null
@@ -411,6 +438,7 @@ export default class KingOfTokyoGame extends Component {
 
           <GameBoardArea
             playerInTokyo={this.getPlayerInTokyo()}
+            winningPlayer={this.getWinningPlayer()}
           />
 
           {!this.state.gameStarted && (
@@ -424,7 +452,7 @@ export default class KingOfTokyoGame extends Component {
             </div>
           )}
 
-          {this.state.gameStarted && (
+          {this.state.gameStarted && !this.state.winningPlayerId && (
             <>
               {!currentTurn.rolls.length && (
                 <p className={css.playerTurnNotice}>
