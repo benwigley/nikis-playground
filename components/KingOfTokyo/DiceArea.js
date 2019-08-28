@@ -25,7 +25,6 @@ class DiceArea extends Component {
   handleRerollClick = () => {
     if (this.areAllDiceHighlighted()) {
       // Tell the parent component that we are finished rolling
-      console.log('onRollCompletion')
       this.props.onRollCompletion()
     } else if (this.areDiceHighlighted()) {
       // Reroll only the dice that aren't highlighted
@@ -81,27 +80,49 @@ class DiceArea extends Component {
 
     return (
       <div className={css.diceArea}>
-        {this.props.roll.length === 0 ? (
-          <button onClick={this.props.onDiceRollClick}>
-            Roll!
-          </button>
+        {this.props.showRelinquishTokyoButtonForPlayer ? (
+          <div className={css.relinquishButtonsContainer}>
+            <p>
+              {this.props.showRelinquishTokyoButtonForPlayer.name}, you've been hit! Do you want to leave Tokyo?
+            </p>
+            <button 
+              value={true} 
+              onClick={this.props.onRelinquishTokyoButtonClick}
+              className="primary"
+            >
+              Leave Tokyo!
+            </button>
+            <button 
+              value={false} 
+              onClick={this.props.onRelinquishTokyoButtonClick}
+              className="secondary"
+            >
+              No, stay in Tokyo!
+            </button>
+          </div>
         ) : (
-          <>
-            <div className={css.diceContainer}>
-              {diceComponents}
-            </div>
-            {this.props.rollComplete ? (
-                <button onClick={this.handleEndTurnClick}>
-                End turn
-              </button>
-            ) : (
-              <button onClick={this.handleRerollClick}>
-                {!this.areDiceHighlighted() ? 'Reroll!' : (
-                  this.areAllDiceHighlighted() ? 'Keep all and finish rolling' : 'Keep dice and reroll!'
-                )}
-              </button>
-            )}
-          </>
+          this.props.roll.length === 0 ? (
+            <button onClick={this.props.onDiceRollClick}>
+              Roll!
+            </button>
+          ) : (
+            <>
+              <div className={css.diceContainer}>
+                {diceComponents}
+              </div>
+              {this.props.rollComplete ? (
+                  <button onClick={this.handleEndTurnClick}>
+                  End turn
+                </button>
+              ) : (
+                <button onClick={this.handleRerollClick}>
+                  {!this.areDiceHighlighted() ? 'Reroll!' : (
+                    this.areAllDiceHighlighted() ? 'Keep all and finish rolling' : 'Keep dice and reroll!'
+                  )}
+                </button>
+              )}
+            </>
+          )
         )}
       </div>
     )
@@ -115,6 +136,8 @@ DiceArea.propTypes = {
   onDiceRollClick: PropTypes.func.isRequired,
   onRollCompletion: PropTypes.func.isRequired,
   onEndTurnClick: PropTypes.func.isRequired,
+  showRelinquishTokyoButtonForPlayer: PropTypes.object,
+  onRelinquishTokyoButtonClick: PropTypes.func.isRequired,
 }
 
 export default DiceArea
