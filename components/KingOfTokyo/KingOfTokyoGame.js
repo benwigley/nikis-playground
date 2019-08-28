@@ -16,6 +16,11 @@ export default class KingOfTokyoGame extends Component {
 
     // set the default state of our game
     this.state = {
+      startingStats: {
+        startingHealth: 10,
+        startingEnergy: 0,
+        startingVictoryPoints: 0,
+      },
       turns: [],
       players: [
         {
@@ -40,9 +45,9 @@ export default class KingOfTokyoGame extends Component {
 
   async componentDidMount() {
 
-    // // Development code to speed up game testing
-    // await this.handleStartClick()
-    // await this.handleDiceRoll()
+    // Development code to speed up game testing
+    await this.handleStartClick()
+    await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // this.handleEndTurnClick()
@@ -63,9 +68,20 @@ export default class KingOfTokyoGame extends Component {
       playerId = nextPlayer.playerId
     }
 
+    // Create a lookup of player stats changes for this turn
+    let playerStatsChanges = {}
+    this.state.players.forEach(playerObject => {
+      playerStatsChanges[playerObject.playerId] = {
+        health: 0,
+        energy: 0,
+        victoryPoints: 0,
+      }
+    })
+
     return {
-      playerId: playerId,
-      playerInTokyoId: playerInTokyoId,
+      playerId,
+      playerInTokyoId,
+      playerStatsChanges,
       playerRelinquishedTokyo: false,
       rollComplete: false,
       rolls: [],
@@ -126,6 +142,61 @@ export default class KingOfTokyoGame extends Component {
         //       But only if they were actually attacked.
       }
     }
+
+    // Apply player stats changes
+    let modifiedTurnsArray = [...this.state.turns]
+    let modifiedCurrentTurn = { ...modifiedTurnsArray[modifiedTurnsArray.length - 1] }
+
+    // Figure out how many of each dice face was rolled
+    let diceTotalsLookup = {}
+    finalRoll.forEach(diceRoll => {
+      for (const property in diceValues) {
+        if (diceValues.hasOwnProperty(property)) {
+          const diceFace = diceValues[property]
+          if (!diceTotalsLookup[diceFace]) diceTotalsLookup[diceFace] = 0 
+          if (diceLookup[diceRoll.value] === diceFace) {
+            diceTotalsLookup[diceFace]++
+          }
+        }
+      }
+    })
+
+    console.log('diceTotalsLookup', diceTotalsLookup)
+
+    this.state.players.forEach(playerObject => {
+      let changesForPlayer = currentTurn.playerStatsChanges[playerObject.playerId]
+
+      // If it is this player's turn, apply health, 
+      // energy, and victoryPoint changes to them.
+      if (playerObject.playerId === currentTurn.playerId) {
+        changesForPlayer.health = diceTotalsLookup[diceValues.HEART]
+        changesForPlayer.energy = diceTotalsLookup[diceValues.ENERGY]
+        // TODO: Caclulate victory points earned for this player
+        // changesForPlayer.victoryPoints = diceTotalsLookup[diceValues.ENERGY]
+        changesForPlayer.victoryPoints = helpers.getVictoryPointsFromDiceTotals(diceTotalsLookup)
+      } 
+      
+      // It is not this player's turn.
+      else {
+        // Is this player being attacked?
+        if (currentTurn.playerInTokyoId === playerObject.playerId) {
+          // If this player is in Tokyo, then yes
+          changesForPlayer.health = -(diceTotalsLookup[diceValues.HEART])
+        }
+        // If the player whose turn it currently is in Tokyo, then yes
+        else if (currentTurn.playerInTokyoId === currentTurn.playerId) {
+          changesForPlayer.health = -(diceTotalsLookup[diceValues.HEART])
+        }
+      }
+
+      // Apply the changes
+      modifiedCurrentTurn.playerStatsChanges[playerObject.playerId] = changesForPlayer
+    })
+    
+    modifiedTurnsArray[modifiedTurnsArray.length - 1] = modifiedCurrentTurn
+    this.setState({
+      turns: modifiedTurnsArray
+    })
 
     this.nextPlayersTurn(playerInTokyoId)
   }
@@ -212,6 +283,7 @@ export default class KingOfTokyoGame extends Component {
           playerObject={playerObject}
           hideMonsterAvatar={playerInTokyo && playerInTokyo.playerId === playerObject.playerId}
           active={this.getCurrentTurn().playerId === playerObject.playerId}
+          key={`TokyoPlayer:${playerObject.playerId}`}
         />
       )
     })
