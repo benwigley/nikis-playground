@@ -38,8 +38,14 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
-  componentDidMount() {
-    this.handleStartClick()
+  async componentDidMount() {
+
+    // Development code to speed up game testing
+    await this.handleStartClick()
+    await this.handleDiceRoll()
+    await this.handleDiceRoll()
+    await this.handleDiceRoll()
+    this.handleEndTurnClick()
   }
 
   createNewTurn(playerInTokyoId =null, playerId=null) {
@@ -180,6 +186,12 @@ export default class KingOfTokyoGame extends Component {
     return find(this.state.players, { playerId: currentTurn.playerId })
   }
 
+  getPlayerInTokyo() {
+    const currentTurn = this.getCurrentTurn()
+    if (!currentTurn || !currentTurn.playerInTokyoId) return null
+    return find(this.state.players, { playerId: currentTurn.playerInTokyoId })
+  }
+
   getCurrentRoll() {
     const currentTurn = this.getCurrentTurn()
     if (!currentTurn) {
@@ -198,7 +210,9 @@ export default class KingOfTokyoGame extends Component {
         <div className={css.kingOfTokyoGameInner}>
           <h3>King of Tokyo</h3>
 
-          <GameBoardArea />
+          <GameBoardArea
+            playerInTokyo={this.getPlayerInTokyo()}
+          />
 
           {!this.state.gameStarted && (
             <div className={css.startButtonContainer}>
