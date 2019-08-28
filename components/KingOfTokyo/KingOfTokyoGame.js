@@ -42,6 +42,7 @@ export default class KingOfTokyoGame extends Component {
     this.state = {
       turns: defaultTurns,
       players: defaultPlayers,
+      gameStarted: false,
     }
   }
 
@@ -78,6 +79,10 @@ export default class KingOfTokyoGame extends Component {
         ]
       }
     })
+  }
+
+  handleStartClick = () => {
+    console.log('handleStartClick')
   }
 
   handleRollCompletion = () => {
@@ -190,35 +195,50 @@ export default class KingOfTokyoGame extends Component {
 
           <GameBoardArea />
 
-          {!this.getCurrentTurn().rolls.length && (
-            <p className={css.playerTurnNotice}>
-              {this.getCurrentPlayer().name}, it's your turn!
-            </p>
+          {!this.state.gameStarted && (
+            <div className={css.startButtonContainer}>
+              <button 
+                className={css.startButton}
+                onClick={this.handleStartClick}
+              >
+                Start game!
+              </button>
+            </div>
           )}
 
-          <DiceArea
-            roll={this.getCurrentRoll()}
-            rollComplete={this.getCurrentTurn().rollComplete}
-            onDiceRollClick={this.handleDiceRoll}
-            onRollCompletion={this.handleRollCompletion}
-            onEndTurnClick={this.handleEndTurnClick}
-          />
+          {this.state.gameStarted && (
+            <>
+              {!this.getCurrentTurn().rolls.length && (
+                <p className={css.playerTurnNotice}>
+                  {this.getCurrentPlayer().name}, it's your turn!
+                </p>
+              )}
 
-          <div className={css.playerCardsContainer}>
-            <Player
-              playerObject={this.state.players[0]}
-              active={this.getCurrentTurn().playerId === this.state.players[0].playerId}
-            />
-            <Player
-              playerObject={this.state.players[1]}
-              active={this.getCurrentTurn().playerId === this.state.players[1].playerId}
-            />
-            <Player
-              playerObject={this.state.players[2]}
-              active={this.getCurrentTurn().playerId === this.state.players[2].playerId}
-            />
+              <DiceArea
+                roll={this.getCurrentRoll()}
+                rollComplete={this.getCurrentTurn().rollComplete}
+                onDiceRollClick={this.handleDiceRoll}
+                onRollCompletion={this.handleRollCompletion}
+                onEndTurnClick={this.handleEndTurnClick}
+              />
+
+              <div className={css.playerCardsContainer}>
+                <Player
+                  playerObject={this.state.players[0]}
+                  active={this.getCurrentTurn().playerId === this.state.players[0].playerId}
+                />
+                <Player
+                  playerObject={this.state.players[1]}
+                  active={this.getCurrentTurn().playerId === this.state.players[1].playerId}
+                />
+                <Player
+                  playerObject={this.state.players[2]}
+                  active={this.getCurrentTurn().playerId === this.state.players[2].playerId}
+                />
+              </div>
+            </>
+          )}
           </div>
-        </div>
       </div>
     )
   }
