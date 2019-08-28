@@ -32,6 +32,14 @@ class Player extends Component {
       })}>
         <h3>{this.props.playerObject.name}</h3>
 
+        <div>
+          <ul>
+            <li>Health: {this.props.stats.health}</li>
+            <li>Energy: {this.props.stats.energy}</li>
+            <li>Victory Points: {this.props.stats.victoryPoints}</li>
+          </ul>
+        </div>
+
         <div className={css.monsterAvatarContainer}>
           {!this.props.hideMonsterAvatar && (
             <MonsterAvatar monsterId={this.props.playerObject.monsterId} />
@@ -47,7 +55,8 @@ class Player extends Component {
 Player.propTypes = {
   active: PropTypes.bool,
   hideMonsterAvatar: PropTypes.bool,
-  playerObject: PropTypes.object.isRequired
+  playerObject: PropTypes.object.isRequired,
+  stats: PropTypes.object.isRequired,
 }
 
 export default Player

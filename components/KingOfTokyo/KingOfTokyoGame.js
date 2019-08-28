@@ -17,9 +17,9 @@ export default class KingOfTokyoGame extends Component {
     // set the default state of our game
     this.state = {
       startingStats: {
-        startingHealth: 10,
-        startingEnergy: 0,
-        startingVictoryPoints: 0,
+        health: 10,
+        energy: 0,
+        victoryPoints: 0,
       },
       turns: [],
       players: [
@@ -257,6 +257,10 @@ export default class KingOfTokyoGame extends Component {
     return find(this.state.players, { playerId: currentTurn.playerId })
   }
 
+  getStatsForPlayerId(playerId) {
+    return this.state.startingStats
+  }
+
   getPlayerInTokyo() {
     const currentTurn = this.getCurrentTurn()
     if (!currentTurn || !currentTurn.playerInTokyoId) return null
@@ -283,6 +287,7 @@ export default class KingOfTokyoGame extends Component {
           playerObject={playerObject}
           hideMonsterAvatar={playerInTokyo && playerInTokyo.playerId === playerObject.playerId}
           active={this.getCurrentTurn().playerId === playerObject.playerId}
+          stats={this.getStatsForPlayerId(playerObject.playerId)}
           key={`TokyoPlayer:${playerObject.playerId}`}
         />
       )
