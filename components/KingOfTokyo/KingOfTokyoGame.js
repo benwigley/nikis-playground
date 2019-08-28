@@ -16,6 +16,11 @@ export default class KingOfTokyoGame extends Component {
 
     // set the default state of our game
     this.state = {
+      maxStats: {
+        health: 10,
+        energy: Infinity,
+        victoryPoints: 20,
+      },
       startingStats: {
         health: 10,
         energy: 0,
@@ -113,7 +118,7 @@ export default class KingOfTokyoGame extends Component {
   }
 
   handleRollCompletion = () => {
-    console.log('handleRollCompletion')
+    // console.log('handleRollCompletion')
   }
 
   handleEndTurnClick = () => {
@@ -165,15 +170,29 @@ export default class KingOfTokyoGame extends Component {
 
     this.state.players.forEach(playerObject => {
       let changesForPlayer = currentTurn.playerStatsChanges[playerObject.playerId]
+      const currentStatsForPlayer = this.getStatsForPlayerId(playerObject.playerId)
 
       // If it is this player's turn, apply health, 
       // energy, and victoryPoint changes to them.
       if (playerObject.playerId === currentTurn.playerId) {
-        changesForPlayer.health = diceTotalsLookup[diceValues.HEART]
+
+        // Check if the current player is in Tokyo, 
+        // and if so, they are not allowed to heal.
+        if (currentTurn.playerInTokyoId !== currentTurn.playerId) {
+          // Calcuate how many hearts the current player can add to their health
+          changesForPlayer.health = diceTotalsLookup[diceValues.HEART]
+          const newTotalHealth = currentStatsForPlayer.health + changesForPlayer.health
+          if (newTotalHealth > this.state.maxStats.health) {
+            changesForPlayer.health = this.state.maxStats.health - currentStatsForPlayer.health
+          }
+        }
+
         changesForPlayer.energy = diceTotalsLookup[diceValues.ENERGY]
-        // TODO: Caclulate victory points earned for this player
-        // changesForPlayer.victoryPoints = diceTotalsLookup[diceValues.ENERGY]
+        
         changesForPlayer.victoryPoints = helpers.getVictoryPointsFromDiceTotals(diceTotalsLookup)
+        if (changesForPlayer.victoryPoints > this.state.maxStats.victoryPoints) {
+          alert(`${playerObject.name} has won!`)
+        }
       } 
       
       // It is not this player's turn.
@@ -181,11 +200,11 @@ export default class KingOfTokyoGame extends Component {
         // Is this player being attacked?
         if (currentTurn.playerInTokyoId === playerObject.playerId) {
           // If this player is in Tokyo, then yes
-          changesForPlayer.health = -(diceTotalsLookup[diceValues.HEART])
+          changesForPlayer.health = -(diceTotalsLookup[diceValues.ATTACK])
         }
         // If the player whose turn it currently is in Tokyo, then yes
         else if (currentTurn.playerInTokyoId === currentTurn.playerId) {
-          changesForPlayer.health = -(diceTotalsLookup[diceValues.HEART])
+          changesForPlayer.health = -(diceTotalsLookup[diceValues.ATTACK])
         }
       }
 
@@ -202,7 +221,7 @@ export default class KingOfTokyoGame extends Component {
   }
 
   handleDiceRoll = (diceHighlightedStatesById={}) => {
-    console.log('KingOfTokyoGame:handleDiceRoll')
+    // console.log('KingOfTokyoGame:handleDiceRoll')
 
     // Clone current turns array
     let newTurnsArray = [...this.state.turns]
@@ -258,7 +277,14 @@ export default class KingOfTokyoGame extends Component {
   }
 
   getStatsForPlayerId(playerId) {
-    return this.state.startingStats
+    let playerStats = { ...this.state.startingStats }
+    this.state.turns.forEach(turn => {
+      const changesForTurn = turn.playerStatsChanges[playerId]
+      playerStats.health += changesForTurn.health
+      playerStats.energy += changesForTurn.energy
+      playerStats.victoryPoints += changesForTurn.victoryPoints
+    })
+    return playerStats
   }
 
   getPlayerInTokyo() {
