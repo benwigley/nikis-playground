@@ -9,9 +9,8 @@ import Player from './Player'
 import css from '../../styles/KingOfTokyo/KingOfTokyoGame.styl'
 
 
-
 // TODO
-// - Make a player win if the go over 20 victory points
+// - Make a player win if they go over 20 victory points
 // - Move complex game logic into helpers
 
 
@@ -248,21 +247,26 @@ export default class KingOfTokyoGame extends Component {
       
       // It is not this player's turn.
       else {
-        // Is this player being attacked?
+        // Is this player in Tokyo?
         if (modifiedCurrentTurn.playerInTokyoId === playerObject.playerId) {
-          // If this player is in Tokyo, then yes
-          changesForPlayer.health = -(diceTotalsLookup[diceFaceKeys.ATTACK])
+          // Did the player outside of Tokyo attack the player in Tokyo?
+          if (diceTotalsLookup[diceFaceKeys.ATTACK] > 0) {
 
-          // Ask the current player in Tokyo if they want to relinquish control,
-          // but only if their total health is above 0 (they're not dead)
-          const totalHealth = currentStatsForPlayer.health + changesForPlayer.health
-          if (totalHealth > 0) {
-            modifiedCurrentTurn.playerInTokyoPendingLeaveDecision = true
+            // Yes, remove attacks from player health
+            changesForPlayer.health = -(diceTotalsLookup[diceFaceKeys.ATTACK])
+
+            // Ask the current player in Tokyo if they want to relinquish control,
+            // but only if their total health is above 0 (they're not dead)
+            const totalHealth = currentStatsForPlayer.health + changesForPlayer.health
+            if (totalHealth > 0) {
+              modifiedCurrentTurn.playerInTokyoPendingLeaveDecision = true
+            }
+            console.log('Putting game into pending state, and asking if the player in Tokyo wants to leave')
           }
-          console.log('Putting game into pending state, and asking if the player in Tokyo wants to leave')
         }
-        // If the player whose turn it currently is in Tokyo, then yes
+        // Is the current player in Tokyo?
         else if (modifiedCurrentTurn.playerInTokyoId === modifiedCurrentTurn.playerId) {
+          // Yes, remove health from the current player if attacks were rolled
           changesForPlayer.health = -(diceTotalsLookup[diceFaceKeys.ATTACK])
         }
       }
