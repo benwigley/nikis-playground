@@ -48,6 +48,7 @@ export default class KingOfTokyoGame extends Component {
           name: "Boogy man",
           playerId: 3,
           monsterId: 2,
+          computer: true
         }
       ],
       gameStarted: false,
@@ -114,22 +115,31 @@ export default class KingOfTokyoGame extends Component {
   }
 
   checkForPlayerVictory() {
+    let winningPlayerId = null
     const activePlayers = this.state.players.filter(playerObject => {
       return !this.isPlayerDead(playerObject.playerId)
     })
     if (activePlayers.length === 1) {
-      this.setState({
-        winningPlayerId: activePlayers[0].id
+      winningPlayerId = activePlayers[0].playerId
+      console.log(`${playerObject.name} is the last player standing`)
+    } else {
+      this.state.players.forEach((playerObject) => {
+        const playerStats = this.getStatsForPlayerId(playerObject.playerId)
+        if (playerStats.victoryPoints >= 20) {
+          winningPlayerId = playerObject.playerId
+          console.log(`${playerObject.name} has won with ${playerStats.victoryPoints} victory points`)
+        }
       })
+    }
+    if (winningPlayerId) {
+      this.setState({ winningPlayerId })
       return true
     }
     return false
   }
 
-  nextPlayersTurn() {
-    if (this.checkForPlayerVictory()) return
-
-    this.setState(prevState => {
+  async nextPlayersTurn() {
+    await this.setState(prevState => {
       return {
         turns: [
           ...prevState.turns,
@@ -137,6 +147,31 @@ export default class KingOfTokyoGame extends Component {
         ]
       }
     })
+    
+    // Is the next turn a computer?
+    const currentPlayer = this.getCurrentPlayer()
+    if (currentPlayer.computer) {
+      // Run their turn for them
+      
+      await this.handleDiceRoll()
+      await helpers.wait(1)
+
+      const diceElements = document.querySelectorAll('[data-name="diceComponent"]')
+      let i = 0
+      let clickedDiceLookup = {}
+      while (i < Math.floor(Math.random() * diceElements.length)) {
+        const randomDiceIndex = Math.floor(Math.random() * diceElements.length)
+        const randomWaitTime = Math.round((Math.random() + 0.5) * 10) / 10 // between .5 and 1.5
+        if (!clickedDiceLookup[randomDiceIndex]) diceElements[randomDiceIndex].click()
+        clickedDiceLookup[randomDiceIndex] = true
+        await helpers.wait(randomWaitTime)
+        i++
+      }
+      await helpers.wait(0.5)
+      await this.handleDiceRoll()
+      await helpers.wait(1)
+      this.handleEndTurnClick()
+    }
   }
 
   handleStartClick = () => {
@@ -283,7 +318,7 @@ export default class KingOfTokyoGame extends Component {
         // current player in Tokyo, and give them 1 victoryPoint for going in.
         modifiedCurrentTurn.nextPlayerInTokyoId = modifiedCurrentTurn.playerId
         modifiedCurrentTurn.playerStatsChanges[modifiedCurrentTurn.playerId].victoryPoints += 1
-        console.log('Current player kills the guy in Tokyo, and get 1 point for going in')
+        console.log('Current player kills the guy in Tokyo, and gets 1 point for going in')
       }
 
       // If the current player was, and is still in Tokyo, give 
@@ -308,6 +343,8 @@ export default class KingOfTokyoGame extends Component {
     await this.setState({
       turns: modifiedTurnsArray
     })
+
+    if (this.checkForPlayerVictory()) return
 
     // If there is a pending leave decision, don't move on to the next turn just yet
     if (modifiedCurrentTurn.playerInTokyoPendingLeaveDecision) return
@@ -467,6 +504,7 @@ export default class KingOfTokyoGame extends Component {
               <DiceArea
                 roll={this.getCurrentRoll()}
                 rollComplete={currentTurn.rollComplete}
+                isComputer={this.getCurrentPlayer().computer}
                 onDiceRollClick={this.handleDiceRoll}
                 onRollCompletion={this.handleRollCompletion}
                 onEndTurnClick={this.handleEndTurnClick}

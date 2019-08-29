@@ -102,7 +102,10 @@ class DiceArea extends Component {
           </div>
         ) : (
           this.props.roll.length === 0 ? (
-            <button onClick={this.props.onDiceRollClick}>
+            <button 
+              onClick={this.props.onDiceRollClick}
+              disabled={this.props.isComputer}
+            >
               Roll!
             </button>
           ) : (
@@ -111,11 +114,16 @@ class DiceArea extends Component {
                 {diceComponents}
               </div>
               {this.props.rollComplete ? (
-                  <button onClick={this.handleEndTurnClick}>
+                  <button 
+                    onClick={this.handleEndTurnClick}
+                    disabled={this.props.isComputer}>
                   End turn
                 </button>
               ) : (
-                <button onClick={this.handleRerollClick}>
+                <button 
+                  onClick={this.handleRerollClick}
+                  disabled={this.props.isComputer}
+                >
                   {!this.areDiceHighlighted() ? 'Reroll!' : (
                     this.areAllDiceHighlighted() ? 'Keep all and finish rolling' : 'Keep dice and reroll!'
                   )}

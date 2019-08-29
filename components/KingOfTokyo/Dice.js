@@ -49,6 +49,7 @@ class Dice extends Component {
 
     return (
       <div
+        data-name="diceComponent"
         className={cx(css.dice, {
           [css.highlightable]: this.props.highlightable,
           [css.highlighted]: this.props.highlighted,
