@@ -24,8 +24,10 @@ export default class KingOfTokyoGame extends Component {
         victoryPoints: 20,
       },
       startingStats: {
-        health: 10,
-        energy: 0,
+        // health: 10,
+        // energy: 0,
+        health: 5,
+        energy: 5,
         victoryPoints: 0,
       },
       winningPlayerId: null,
@@ -308,16 +310,16 @@ export default class KingOfTokyoGame extends Component {
         // and if so, they are not allowed to heal.
         if (modifiedCurrentTurn.playerInTokyoId !== modifiedCurrentTurn.playerId) {
           // Calcuate how many hearts the current player can add to their health
-          changesForPlayer.health = diceTotalsLookup[diceFaceKeys.HEART]
+          changesForPlayer.health += diceTotalsLookup[diceFaceKeys.HEART]
           const newTotalHealth = currentStatsForPlayer.health + changesForPlayer.health
           if (newTotalHealth > this.state.maxStats.health) {
-            changesForPlayer.health = this.state.maxStats.health - currentStatsForPlayer.health
+            changesForPlayer.health += - currentStatsForPlayer.health
           }
         }
 
-        changesForPlayer.energy = diceTotalsLookup[diceFaceKeys.ENERGY]
+        changesForPlayer.energy = changesForPlayer.energy + diceTotalsLookup[diceFaceKeys.ENERGY]
         
-        changesForPlayer.victoryPoints = helpers.getVictoryPointsFromDiceTotals(diceTotalsLookup)
+        changesForPlayer.victoryPoints += helpers.getVictoryPointsFromDiceTotals(diceTotalsLookup)
         if (changesForPlayer.victoryPoints > this.state.maxStats.victoryPoints) {
           alert(`${playerObject.name} has won!`)
         }
@@ -444,19 +446,46 @@ export default class KingOfTokyoGame extends Component {
   }
 
   handleBuyHeart = () => {
-    let playerStats = this.getStatsForPlayerId(this.getCurrentPlayer().playerId)
-    if (
-      !this.isCurrentPlayerInTokyo() && 
-      playerStats.health < 10 &&
-      playerStats.energy >= 5
-    ) {
-      console.log("this works") 
-    } else {
-      console.log("doesn't work :(")
+    const currentPlayerId = this.getCurrentPlayer().playerId
+    if (this.isCurrentPlayerAllowedToBuyHeart()) { 
+      this.updateStatsChangesForPlayerId(currentPlayerId, {
+        health: 1,
+        energy: -5
+      })
     }
   }
 
-  
+  isCurrentPlayerAllowedToBuyHeart() {
+    const currentPlayerId = this.getCurrentPlayer().playerId
+    const playerStats = this.getStatsForPlayerId(currentPlayerId)
+    return (
+      !this.isCurrentPlayerInTokyo() &&
+      playerStats.health < 10 &&
+      playerStats.energy >= 5
+    )
+  }
+
+  updateStatsChangesForPlayerId = (playerId, statsUpdates) => {
+    // Get and clone the state we're going to use
+    let modifiedTurnsArray = [...this.state.turns]
+    let modifiedCurrentTurn = { ...modifiedTurnsArray[modifiedTurnsArray.length - 1] }
+    let modifiedPlayerStatsChanges = { ...modifiedCurrentTurn.playerStatsChanges[playerId] }
+
+    // Update the playerStatsChanges based on the changes passed in the statsUpdates agurment
+    for (const key in statsUpdates) {
+      if (statsUpdates.hasOwnProperty(key)) {
+        modifiedPlayerStatsChanges[key] += statsUpdates[key]
+      }
+    }
+    console.log('modifiedPlayerStatsChanges', modifiedPlayerStatsChanges)
+    
+    // Set the state back on our turn
+    modifiedCurrentTurn.playerStatsChanges[playerId] = modifiedPlayerStatsChanges
+    modifiedTurnsArray[modifiedTurnsArray.length - 1] = modifiedCurrentTurn
+    return this.setState({
+      turns: modifiedTurnsArray
+    })
+  }
 
   getCurrentTurn() {
     return this.state.turns[this.state.turns.length - 1]
