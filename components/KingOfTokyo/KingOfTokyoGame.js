@@ -443,6 +443,21 @@ export default class KingOfTokyoGame extends Component {
     })
   }
 
+  handleBuyHeart = () => {
+    let playerStats = this.getStatsForPlayerId(this.getCurrentPlayer().playerId)
+    if (
+      !this.isCurrentPlayerInTokyo() && 
+      playerStats.health < 10 &&
+      playerStats.energy >= 5
+    ) {
+      console.log("this works") 
+    } else {
+      console.log("doesn't work :(")
+    }
+  }
+
+  
+
   getCurrentTurn() {
     return this.state.turns[this.state.turns.length - 1]
   }
@@ -478,6 +493,12 @@ export default class KingOfTokyoGame extends Component {
     const currentTurn = this.getCurrentTurn()
     if (!currentTurn || !currentTurn.playerInTokyoId) return null
     return find(this.state.players, { playerId: currentTurn.playerInTokyoId })
+  }
+
+  isCurrentPlayerInTokyo() {
+    const currentTurn = this.getCurrentTurn()
+    if (!currentTurn || !currentTurn.playerInTokyoId) return false
+    return this.getCurrentPlayer().playerId === currentTurn.playerInTokyoId
   }
 
   getCurrentRoll() {
@@ -554,6 +575,18 @@ export default class KingOfTokyoGame extends Component {
                 showRelinquishTokyoButtonForPlayer={currentTurn.playerInTokyoPendingLeaveDecision ? this.getPlayerInTokyo() : null}
                 onRelinquishTokyoButtonClick={this.handleRelinquishTokyoButtonClick}
               />
+
+
+
+              <br />
+              <button 
+                className={css.buyHeartButton}
+                onClick={this.handleBuyHeart}
+              >
+                Purchase 1 Heart? (cost: 5 energy)
+              </button>
+
+
 
               <div className={css.playerCardsContainer}>
                 {this.getPlayerComponents()}
