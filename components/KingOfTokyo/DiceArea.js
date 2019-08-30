@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 import Dice from './Dice'
+import cx from 'classnames'
 
 import css from '../../styles/KingOfTokyo/DiceArea.styl'
 
@@ -69,6 +70,7 @@ class DiceArea extends Component {
       diceComponents.push(
         <Dice
           diceNumber={randomDiceRoll.value}
+          isComputer={this.props.isComputer}
           highlighted={this.state.diceHighlightedStatesById[randomDiceRoll.key]}
           highlightable={!this.props.rollComplete}
           onDiceClick={this.handleDiceClick}
@@ -100,34 +102,55 @@ class DiceArea extends Component {
               No, stay in Tokyo!
             </button>
           </div>
+
+        // Not showing Leave/Stay in Tokyo buttons
         ) : (
           this.props.roll.length === 0 ? (
-            <button 
-              onClick={this.props.onDiceRollClick}
-              disabled={this.props.isComputer}
-            >
-              Roll!
-            </button>
+            <div className={cx(css.buttonContainer, {
+              [css.disabledButton]: this.props.isComputer
+            })}>
+              <div className={cx(css.buttonContainer, {
+                [css.disabledButton]: this.props.isComputer
+              })}>
+                <button 
+                  data-name="rerollButton"
+                  onClick={this.props.onDiceRollClick}
+                >Roll!</button>
+              </div>
+            </div>
           ) : (
             <>
               <div className={css.diceContainer}>
                 {diceComponents}
               </div>
               {this.props.rollComplete ? (
-                  <button 
-                    onClick={this.handleEndTurnClick}
-                    disabled={this.props.isComputer}>
-                  End turn
-                </button>
+                <div className={cx(css.buttonContainer, {
+                  [css.disabledButton]: this.props.isComputer
+                })}>
+                  <div className={cx(css.buttonContainer, {
+                    [css.disabledButton]: this.props.isComputer
+                  })}>
+                    <button 
+                      onClick={this.handleEndTurnClick}
+                      className={this.props.isComputer && css.disabledButton}>
+                      End turn
+                    </button>
+                  </div>
+                </div>
               ) : (
-                <button 
-                  onClick={this.handleRerollClick}
-                  disabled={this.props.isComputer}
-                >
-                  {!this.areDiceHighlighted() ? 'Reroll!' : (
-                    this.areAllDiceHighlighted() ? 'Keep all and finish rolling' : 'Keep dice and reroll!'
-                  )}
-                </button>
+                <div className={cx(css.buttonContainer, {
+                  [css.disabledButton]: this.props.isComputer
+                })}>
+                  <button 
+                    data-name="rerollButton"
+                    onClick={this.handleRerollClick}
+                    className={this.props.isComputer && css.disabledButton}
+                  >
+                    {!this.areDiceHighlighted() ? 'Reroll!' : (
+                      this.areAllDiceHighlighted() ? 'Keep all and finish rolling' : 'Keep dice and reroll!'
+                    )}
+                  </button>
+                </div>
               )}
             </>
           )

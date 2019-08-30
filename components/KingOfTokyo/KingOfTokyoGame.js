@@ -58,8 +58,8 @@ export default class KingOfTokyoGame extends Component {
   async componentDidMount() {
 
     // Development code to speed up game testing
-    await this.handleStartClick()
-    await this.handleDiceRoll()
+    // await this.handleStartClick()
+    // await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // this.handleEndTurnClick()
@@ -121,7 +121,7 @@ export default class KingOfTokyoGame extends Component {
     })
     if (activePlayers.length === 1) {
       winningPlayerId = activePlayers[0].playerId
-      console.log(`${playerObject.name} is the last player standing`)
+      console.log(`${activePlayers[0].name} is the last player standing`)
     } else {
       this.state.players.forEach((playerObject) => {
         const playerStats = this.getStatsForPlayerId(playerObject.playerId)
@@ -149,42 +149,65 @@ export default class KingOfTokyoGame extends Component {
     })
     
     // Is the next turn a computer?
-    const currentPlayer = this.getCurrentPlayer()
-    if (currentPlayer.computer) {
-      // Run their turn for them
-      
-      await this.handleDiceRoll()
-      await helpers.wait(1)
+    if (this.getCurrentPlayer().computer) this.automateCurrentTurn()
+  }
 
-      const diceElements = document.querySelectorAll('[data-name="diceComponent"]')
-      let i = 0
-      let clickedDiceLookup = {}
-      while (i < Math.floor(Math.random() * diceElements.length)) {
-        const randomDiceIndex = Math.floor(Math.random() * diceElements.length)
-        const randomWaitTime = Math.round((Math.random() + 0.5) * 10) / 10 // between .5 and 1.5
-        if (!clickedDiceLookup[randomDiceIndex]) diceElements[randomDiceIndex].click()
-        clickedDiceLookup[randomDiceIndex] = true
+  async automateDiceSelection(clickedDiceLookup={}) {
+    const diceElements = document.querySelectorAll('[data-name="diceComponent"]')
+    const numberOfDiceToChange = Math.floor(Math.random() * diceElements.length)
+    for (let i = 0; i < numberOfDiceToChange; i++) {
+      const randomDiceIndex = Math.floor(Math.random() * diceElements.length)
+      const randomWaitTime = Math.round((Math.random() + 0.5) * 10) / 10 // between .5 and 1.5
+      if (!clickedDiceLookup[randomDiceIndex]) {
+        diceElements[randomDiceIndex].click()
         await helpers.wait(randomWaitTime)
-        i++
+        clickedDiceLookup[randomDiceIndex] = true
       }
-      await helpers.wait(0.5)
-      await this.handleDiceRoll()
-      await helpers.wait(1)
-      this.handleEndTurnClick()
     }
   }
 
-  handleStartClick = () => {
+  clickRerollButton() {
+    document.querySelector('[data-name="rerollButton"]').click()
+  }
+
+  async automateCurrentTurn() {
+    let savedClickedDiceLookup = {}
+
+    this.clickRerollButton()
+    console.log("he rolled the first time")
+    await helpers.wait(0.2)
+    await this.automateDiceSelection(savedClickedDiceLookup)
+    console.log("he finished selecting dice")
+
+    this.clickRerollButton()
+    console.log("he clicked reroll for the 2nd time!")
+    await helpers.wait(0.2)
+    await this.automateDiceSelection(savedClickedDiceLookup)
+    console.log("he finished selecting more dice")
+
+    this.clickRerollButton()
+    console.log("he clicked reroll for the 3rd and final time")
+    await helpers.wait(0.2)
+    await this.automateDiceSelection(savedClickedDiceLookup)
+    console.log("he finished selecting more dice")
+
+    await helpers.wait(0.6)
+    console.log("He's finished, about to click end turn")
+    this.handleEndTurnClick()
+  }
+
+  handleStartClick = async () => {
     // console.log('handleStartClick')
     if (this.state.turns.length) return
 
     // kick off the game with a starting turn for a random player
-    const randomPlayer = this.state.players[Math.floor((this.state.players.length - 1) * Math.random())]
+    const randomPlayer = this.state.players[Math.floor((this.state.players.length) * Math.random())]
     
-    this.setState({
+    await this.setState({
       turns: [this.createNewTurn(randomPlayer.playerId)],
       gameStarted: true
     })
+    if (this.getCurrentPlayer().computer) this.automateCurrentTurn()
   }
 
   handleRelinquishTokyoButtonClick = async (e) => {

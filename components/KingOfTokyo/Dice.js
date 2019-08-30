@@ -49,13 +49,19 @@ class Dice extends Component {
 
     return (
       <div
-        data-name="diceComponent"
         className={cx(css.dice, {
           [css.highlightable]: this.props.highlightable,
           [css.highlighted]: this.props.highlighted,
+          [css.isComputer]: this.props.isComputer,
         })}
-        onClick={this.handleClick}>
-        {diceImg}
+      >
+        <div 
+          className={css.diceInner}
+          onClick={this.handleClick}
+          data-name="diceComponent"
+        >
+          {diceImg}
+        </div>
       </div>
     )
   }
@@ -72,6 +78,7 @@ Dice.propTypes = {
   diceNumber: PropTypes.number.isRequired,
   highlighted: PropTypes.bool,
   highlightable: PropTypes.bool.isRequired,
+  isComputer: PropTypes.bool,
   onDiceClick: PropTypes.func.isRequired,
 }
 
