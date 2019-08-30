@@ -15,9 +15,19 @@ class DiceArea extends Component {
     }
   }
 
-  handleDiceClick = (diceId) => {
+  handleDiceClick = (e, diceId, diceValue) => {
+    // console.log('handleDiceClick shiftKey:', e.shiftKey)
     let modifiedDiceHighlightedStatesById = { ...this.state.diceHighlightedStatesById }
-    modifiedDiceHighlightedStatesById[diceId] = !modifiedDiceHighlightedStatesById[diceId]
+    if (e.shiftKey) {
+      const clickedDiceState = modifiedDiceHighlightedStatesById[diceId]
+      const allDiceOfTheSameValue = document.querySelectorAll(`[data-dice-value="${diceValue}"]`)
+      allDiceOfTheSameValue.forEach(el => {
+        const diceIdOfSiblingDice = el.getAttribute('data-dice-id')
+        modifiedDiceHighlightedStatesById[diceIdOfSiblingDice] = !clickedDiceState
+      })
+    } else {
+      modifiedDiceHighlightedStatesById[diceId] = !modifiedDiceHighlightedStatesById[diceId]
+    }
     this.setState({
       diceHighlightedStatesById: modifiedDiceHighlightedStatesById
     })
@@ -69,7 +79,7 @@ class DiceArea extends Component {
     const createAndAddNewDiceComponent = (randomDiceRoll) => {
       diceComponents.push(
         <Dice
-          diceNumber={randomDiceRoll.value}
+          diceValue={randomDiceRoll.value}
           isComputer={this.props.isComputer}
           highlighted={this.state.diceHighlightedStatesById[randomDiceRoll.key]}
           highlightable={!this.props.rollComplete}

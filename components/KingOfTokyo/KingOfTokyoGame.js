@@ -157,9 +157,20 @@ export default class KingOfTokyoGame extends Component {
     const numberOfDiceToChange = Math.floor(Math.random() * diceElements.length)
     for (let i = 0; i < numberOfDiceToChange; i++) {
       const randomDiceIndex = Math.floor(Math.random() * diceElements.length)
-      const randomWaitTime = Math.round((Math.random() + 0.5) * 10) / 10 // between .5 and 1.5
+      const randomWaitTime = Math.round((Math.random() + 0.7) * 10) / 10 // between .7 and 1.7
       if (!clickedDiceLookup[randomDiceIndex]) {
-        diceElements[randomDiceIndex].click()
+        const diceEl = diceElements[randomDiceIndex]
+        const diceValue = Number(diceEl.getAttribute('data-dice-value'))
+        // if (diceLookup[diceValue] === diceFaceKeys.ATTACK) {
+        //   console.log('he selected an Attack!')
+        // }
+        // if (diceLookup[diceValue] === diceFaceKeys.HEART) {
+        //   console.log('he selected a Heart!')
+        // }
+        // if (diceLookup[diceValue] === diceFaceKeys.ENERGY) {
+        //   console.log('he selected Energy!')
+        // }
+        diceEl.click()
         await helpers.wait(randomWaitTime)
         clickedDiceLookup[randomDiceIndex] = true
       }

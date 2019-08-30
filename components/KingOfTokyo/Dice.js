@@ -15,7 +15,7 @@ class Dice extends Component {
   render() {
 
     let diceImgUrl = '', altText = ''
-    switch (this.props.diceNumber) {
+    switch (this.props.diceValue) {
       case 1:
         diceImgUrl = "/static/images/KingOfTokyo/DiceOne.png"
         altText = "1"
@@ -59,6 +59,8 @@ class Dice extends Component {
           className={css.diceInner}
           onClick={this.handleClick}
           data-name="diceComponent"
+          data-dice-id={this.props.diceId}
+          data-dice-value={this.props.diceValue}
         >
           {diceImg}
         </div>
@@ -66,16 +68,16 @@ class Dice extends Component {
     )
   }
 
-  handleClick = () => {
+  handleClick = (e) => {
     // Tell the parent component a click happened
-    this.props.onDiceClick(this.props.diceId)
+    this.props.onDiceClick(e, this.props.diceId, this.props.diceValue)
   }
 
 }
 
 Dice.propTypes = {
   diceId: PropTypes.number.isRequired,
-  diceNumber: PropTypes.number.isRequired,
+  diceValue: PropTypes.number.isRequired,
   highlighted: PropTypes.bool,
   highlightable: PropTypes.bool.isRequired,
   isComputer: PropTypes.bool,
