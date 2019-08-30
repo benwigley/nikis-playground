@@ -16,11 +16,8 @@ import css from '../../styles/KingOfTokyo/KingOfTokyoGame.styl'
 
 export default class KingOfTokyoGame extends Component {
 
-  constructor(props) {
-    super(props)
-
-    // set the default state of our game
-    this.state = {
+  getDefaultState() {
+    return {
       maxStats: {
         health: 10,
         energy: Infinity,
@@ -55,6 +52,13 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
+  constructor(props) {
+    super(props)
+
+    // set the default state of our game
+    this.state = this.getDefaultState()
+  }
+
   async componentDidMount() {
 
     // Development code to speed up game testing
@@ -63,6 +67,11 @@ export default class KingOfTokyoGame extends Component {
     // await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // this.handleEndTurnClick()
+  }
+
+  handleRestartGame = async () => {
+    await this.setState(this.getDefaultState())
+    this.handleStartClick()
   }
 
   createNewTurn(playerId=null) {
@@ -551,6 +560,19 @@ export default class KingOfTokyoGame extends Component {
               </div>
             </>
           )}
+
+          {/* Restart game button */}
+          {this.state.gameStarted && this.state.winningPlayerId && (
+            <div className={css.startButtonContainer}>
+              <button
+                className={css.startButton}
+                onClick={this.handleRestartGame}
+              >
+                Restart game!
+              </button>
+            </div>
+          )}
+
           </div>
       </div>
     )
