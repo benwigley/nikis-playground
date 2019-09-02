@@ -34,19 +34,20 @@ export default class KingOfTokyoGame extends Component {
       turns: [],
       players: [
         {
-          name: "Ben",
+          name: "Player 1",
           playerId: 1,
-          monsterId: 3,
-        },
-        {
-          name: "Niki",
-          playerId: 2,
           monsterId: 1,
         },
         {
-          name: "Boogy man",
-          playerId: 3,
+          name: "Player 2",
+          playerId: 2,
           monsterId: 2,
+          computer: true
+        },
+        {
+          name: "Player 3",
+          playerId: 3,
+          monsterId: 3,
           computer: true
         }
       ],
@@ -63,12 +64,35 @@ export default class KingOfTokyoGame extends Component {
 
   async componentDidMount() {
 
+    // Always show player 1 name and monster inputs
+    //    Needs a handler for onChange event of name input
+    //    handlePlayerNameChange(playerId)
+    //    handlePlayerMonsterChange(playerId)
+    // Show player 2 inputs (if ...)
+    //    
+    // ...other things to show
+    // 
+
     // Development code to speed up game testing
     // await this.handleStartClick()
     // await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // await this.handleDiceRoll()
     // this.handleEndTurnClick()
+  }
+
+  handleStartClick = async () => {
+    // console.log('handleStartClick')
+    if (this.state.turns.length) return
+
+    // kick off the game with a starting turn for a random player
+    const randomPlayer = this.state.players[Math.floor((this.state.players.length) * Math.random())]
+
+    await this.setState({
+      turns: [this.createNewTurn(randomPlayer.playerId)],
+      gameStarted: true
+    })
+    if (this.getCurrentPlayer().computer) this.automateCurrentTurn()
   }
 
   handleRestartGame = async () => {
@@ -112,7 +136,7 @@ export default class KingOfTokyoGame extends Component {
     })
 
     const playerInTokyoId = previousTurn ? previousTurn.nextPlayerInTokyoId : null
-    console.log('Creating new turn: playerInTokyoId', playerInTokyoId)
+    // console.log('Creating new turn: playerInTokyoId', playerInTokyoId)
 
     return {
       playerId,
@@ -193,12 +217,12 @@ export default class KingOfTokyoGame extends Component {
     const playerStats = this.getStatsForPlayerId(currentPlayerId)
     const randomNumber = Math.random() * 10
     await helpers.wait(1)
-    console.log('playerStats.health', playerStats.health)
+    // console.log('playerStats.health', playerStats.health)
     if (randomNumber > playerStats.health) {
-      console.log("computer wants to leave", randomNumber)
+      // console.log("computer wants to leave", randomNumber)
       await this.makeCurrentPlayerLeaveTokyo() 
     } else {
-      console.log("player didn't want to leave", randomNumber)
+      // console.log("player didn't want to leave", randomNumber)
     }
     this.nextPlayersTurn()
   }
@@ -212,40 +236,26 @@ export default class KingOfTokyoGame extends Component {
     let savedClickedDiceLookup = {}
 
     this.clickRerollButton()
-    console.log("he rolled the first time")
+    // // console.log("he rolled the first time")
     await helpers.wait(0.2)
     await this.automateDiceSelection(savedClickedDiceLookup)
-    console.log("he finished selecting dice")
+    // console.log("he finished selecting dice")
 
     this.clickRerollButton()
-    console.log("he clicked reroll for the 2nd time!")
+    // console.log("he clicked reroll for the 2nd time!")
     await helpers.wait(0.2)
     await this.automateDiceSelection(savedClickedDiceLookup)
-    console.log("he finished selecting more dice")
+    // console.log("he finished selecting more dice")
 
     this.clickRerollButton()
-    console.log("he clicked reroll for the 3rd and final time")
+    // console.log("he clicked reroll for the 3rd and final time")
     await helpers.wait(0.2)
     await this.automateDiceSelection(savedClickedDiceLookup)
-    console.log("he finished selecting more dice")
+    // console.log("he finished selecting more dice")
 
     await helpers.wait(0.6)
-    console.log("He's finished, about to click end turn")
+    // console.log("He's finished, about to click end turn")
     this.handleEndTurnClick()
-  }
-
-  handleStartClick = async () => {
-    // console.log('handleStartClick')
-    if (this.state.turns.length) return
-
-    // kick off the game with a starting turn for a random player
-    const randomPlayer = this.state.players[Math.floor((this.state.players.length) * Math.random())]
-    
-    await this.setState({
-      turns: [this.createNewTurn(randomPlayer.playerId)],
-      gameStarted: true
-    })
-    if (this.getCurrentPlayer().computer) this.automateCurrentTurn()
   }
 
   handleRelinquishTokyoButtonClick = async (e) => {
@@ -342,7 +352,7 @@ export default class KingOfTokyoGame extends Component {
           if (diceTotalsLookup[diceFaceKeys.ATTACK] > 0) {
 
             // Yes, remove attacks from player health
-            console.log('diceTotalsLookup[diceFaceKeys.ATTACK]', diceTotalsLookup[diceFaceKeys.ATTACK])
+            // console.log('diceTotalsLookup[diceFaceKeys.ATTACK]', diceTotalsLookup[diceFaceKeys.ATTACK])
             changesForPlayer.health -= diceTotalsLookup[diceFaceKeys.ATTACK]
 
             // Ask the current player in Tokyo if they want to relinquish control,
@@ -351,13 +361,13 @@ export default class KingOfTokyoGame extends Component {
             if (totalHealth > 0) {
               modifiedCurrentTurn.playerInTokyoPendingLeaveDecision = true
             }
-            console.log('Putting game into pending state, and asking if the player in Tokyo wants to leave')
+            // console.log('Putting game into pending state, and asking if the player in Tokyo wants to leave')
           }
         }
         // Is the current player in Tokyo?
         else if (modifiedCurrentTurn.playerInTokyoId === modifiedCurrentTurn.playerId) {
           // Yes, remove health from the current player if attacks were rolled
-          console.log('diceTotalsLookup[diceFaceKeys.ATTACK]', diceTotalsLookup[diceFaceKeys.ATTACK])
+          // console.log('diceTotalsLookup[diceFaceKeys.ATTACK]', diceTotalsLookup[diceFaceKeys.ATTACK])
           changesForPlayer.health -= diceTotalsLookup[diceFaceKeys.ATTACK]
         }
       }
@@ -374,7 +384,7 @@ export default class KingOfTokyoGame extends Component {
         // current player in Tokyo, and give them 1 victoryPoint for going in.
         modifiedCurrentTurn.nextPlayerInTokyoId = modifiedCurrentTurn.playerId
         modifiedCurrentTurn.playerStatsChanges[modifiedCurrentTurn.playerId].victoryPoints += 1
-        console.log('Current player kills the guy in Tokyo, and gets 1 point for going in')
+        // console.log('Current player kills the guy in Tokyo, and gets 1 point for going in')
       }
 
       // If the current player was, and is still in Tokyo, give 
@@ -382,14 +392,14 @@ export default class KingOfTokyoGame extends Component {
       // TODO: Move this to happen at the start of a players turn in Tkyo
       else if (modifiedCurrentTurn.playerInTokyoId === modifiedCurrentTurn.playerId) {
         modifiedCurrentTurn.playerStatsChanges[modifiedCurrentTurn.playerId].victoryPoints += 2
-        console.log('Current player was already in Tokyo, and gets 2 points')
+        // console.log('Current player was already in Tokyo, and gets 2 points')
       }
     } 
     
     // If there is no one in Tokyo, put the current 
     // player in Tokyo if they rolled one or more attacks.
     else if (diceTotalsLookup[diceFaceKeys.ATTACK] > 0) {
-      console.log('Putting the current player In Tokyo for rolling an attack')
+      // console.log('Putting the current player In Tokyo for rolling an attack')
       modifiedCurrentTurn.nextPlayerInTokyoId = modifiedCurrentTurn.playerId
       modifiedCurrentTurn.playerStatsChanges[modifiedCurrentTurn.playerId].victoryPoints += 1
     }
@@ -476,7 +486,7 @@ export default class KingOfTokyoGame extends Component {
     let modifiedCurrentTurn = { ...modifiedTurnsArray[modifiedTurnsArray.length - 1] }
     modifiedCurrentTurn.nextPlayerInTokyoId = modifiedCurrentTurn.playerId
     modifiedTurnsArray[modifiedTurnsArray.length - 1] = modifiedCurrentTurn
-    console.log('The player in Tokyo opted to leave, new player going into Tokyo is: ', modifiedCurrentTurn.playerId)
+    // console.log('The player in Tokyo opted to leave, new player going into Tokyo is: ', modifiedCurrentTurn.playerId)
     await this.setState({
       turns: modifiedTurnsArray
     })
@@ -499,7 +509,7 @@ export default class KingOfTokyoGame extends Component {
     let modifiedPlayerStatsChanges = { ...modifiedCurrentTurn.playerStatsChanges[playerId] }
 
     // Update the playerStatsChanges based on the changes passed in the statsUpdates agurment
-    console.log('statsUpdates', statsUpdates)
+    // console.log('statsUpdates', statsUpdates)
     for (const key in statsUpdates) {
       if (statsUpdates.hasOwnProperty(key)) {
         modifiedPlayerStatsChanges[key] += statsUpdates[key]
