@@ -101,6 +101,7 @@ class DiceArea extends Component {
               value={true} 
               onClick={this.props.onRelinquishTokyoButtonClick}
               className="primary"
+              disabled={this.props.isComputerInTokyo}
             >
               Leave Tokyo!
             </button>
@@ -108,6 +109,7 @@ class DiceArea extends Component {
               value={false} 
               onClick={this.props.onRelinquishTokyoButtonClick}
               className="secondary"
+              disabled={this.props.isComputer}
             >
               No, stay in Tokyo!
             </button>

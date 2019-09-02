@@ -24,10 +24,10 @@ export default class KingOfTokyoGame extends Component {
         victoryPoints: 20,
       },
       startingStats: {
-        // health: 10,
-        // energy: 0,
-        health: 5,
-        energy: 5,
+        health: 10,
+        energy: 0,
+        // health: 5,
+        // energy: 5,
         victoryPoints: 0,
       },
       winningPlayerId: null,
@@ -188,6 +188,22 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
+  automateIsComputerLeavingTokyo = async () => {
+    const currentPlayerId = this.getPlayerInTokyo().playerId
+    const playerStats = this.getStatsForPlayerId(currentPlayerId)
+    const randomNumber = Math.random() * 10
+    await helpers.wait(1)
+    console.log('playerStats.health', playerStats.health)
+    if (randomNumber > playerStats.health) {
+      console.log("computer wants to leave", randomNumber)
+      await this.makeCurrentPlayerLeaveTokyo() 
+    } else {
+      console.log("player didn't want to leave", randomNumber)
+    }
+    this.nextPlayersTurn()
+  }
+
+
   clickRerollButton() {
     document.querySelector('[data-name="rerollButton"]').click()
   }
@@ -238,20 +254,13 @@ export default class KingOfTokyoGame extends Component {
 
     // If the player wants to leave, switch out the current player with the one in Tokyo
     if (playerWantsToLeaveTokyo) {
-      let modifiedTurnsArray = [...this.state.turns]
-      let modifiedCurrentTurn = { ...modifiedTurnsArray[modifiedTurnsArray.length - 1] }
-      modifiedCurrentTurn.nextPlayerInTokyoId = modifiedCurrentTurn.playerId
-      modifiedTurnsArray[modifiedTurnsArray.length - 1] = modifiedCurrentTurn
-      console.log('The player in Tokyo opted to leave, new player going into Tokyo is: ', modifiedCurrentTurn.playerId)
-      await this.setState({
-        turns: modifiedTurnsArray
-      })
+      await this.makeCurrentPlayerLeaveTokyo()
     }
 
     // Turn is over, move on to the next player
     this.nextPlayersTurn()
   }
-
+  
   handleRollCompletion = async () => {
     console.log('handleRollCompletion')
 
@@ -313,7 +322,7 @@ export default class KingOfTokyoGame extends Component {
           changesForPlayer.health += diceTotalsLookup[diceFaceKeys.HEART]
           const newTotalHealth = currentStatsForPlayer.health + changesForPlayer.health
           if (newTotalHealth > this.state.maxStats.health) {
-            changesForPlayer.health += - currentStatsForPlayer.health
+            changesForPlayer.health -= (newTotalHealth - this.state.maxStats.health)
           }
         }
 
@@ -333,7 +342,8 @@ export default class KingOfTokyoGame extends Component {
           if (diceTotalsLookup[diceFaceKeys.ATTACK] > 0) {
 
             // Yes, remove attacks from player health
-            changesForPlayer.health = -(diceTotalsLookup[diceFaceKeys.ATTACK])
+            console.log('diceTotalsLookup[diceFaceKeys.ATTACK]', diceTotalsLookup[diceFaceKeys.ATTACK])
+            changesForPlayer.health -= diceTotalsLookup[diceFaceKeys.ATTACK]
 
             // Ask the current player in Tokyo if they want to relinquish control,
             // but only if their total health is above 0 (they're not dead)
@@ -347,7 +357,8 @@ export default class KingOfTokyoGame extends Component {
         // Is the current player in Tokyo?
         else if (modifiedCurrentTurn.playerInTokyoId === modifiedCurrentTurn.playerId) {
           // Yes, remove health from the current player if attacks were rolled
-          changesForPlayer.health = -(diceTotalsLookup[diceFaceKeys.ATTACK])
+          console.log('diceTotalsLookup[diceFaceKeys.ATTACK]', diceTotalsLookup[diceFaceKeys.ATTACK])
+          changesForPlayer.health -= diceTotalsLookup[diceFaceKeys.ATTACK]
         }
       }
 
@@ -392,7 +403,12 @@ export default class KingOfTokyoGame extends Component {
     if (this.checkForPlayerVictory()) return
 
     // If there is a pending leave decision, don't move on to the next turn just yet
-    if (modifiedCurrentTurn.playerInTokyoPendingLeaveDecision) return
+    if (modifiedCurrentTurn.playerInTokyoPendingLeaveDecision) {
+      if (this.getPlayerInTokyo().computer) {
+        this.automateIsComputerLeavingTokyo()
+      }
+      return
+    }
 
     // Turn is over, move on to the next player
     this.nextPlayersTurn()
@@ -455,6 +471,17 @@ export default class KingOfTokyoGame extends Component {
     }
   }
 
+  async makeCurrentPlayerLeaveTokyo() {
+    let modifiedTurnsArray = [...this.state.turns]
+    let modifiedCurrentTurn = { ...modifiedTurnsArray[modifiedTurnsArray.length - 1] }
+    modifiedCurrentTurn.nextPlayerInTokyoId = modifiedCurrentTurn.playerId
+    modifiedTurnsArray[modifiedTurnsArray.length - 1] = modifiedCurrentTurn
+    console.log('The player in Tokyo opted to leave, new player going into Tokyo is: ', modifiedCurrentTurn.playerId)
+    await this.setState({
+      turns: modifiedTurnsArray
+    })
+  }
+
   isCurrentPlayerAllowedToBuyHeart() {
     const currentPlayerId = this.getCurrentPlayer().playerId
     const playerStats = this.getStatsForPlayerId(currentPlayerId)
@@ -472,6 +499,7 @@ export default class KingOfTokyoGame extends Component {
     let modifiedPlayerStatsChanges = { ...modifiedCurrentTurn.playerStatsChanges[playerId] }
 
     // Update the playerStatsChanges based on the changes passed in the statsUpdates agurment
+    console.log('statsUpdates', statsUpdates)
     for (const key in statsUpdates) {
       if (statsUpdates.hasOwnProperty(key)) {
         modifiedPlayerStatsChanges[key] += statsUpdates[key]
@@ -601,6 +629,7 @@ export default class KingOfTokyoGame extends Component {
                 onDiceRollClick={this.handleDiceRoll}
                 onRollCompletion={this.handleRollCompletion}
                 onEndTurnClick={this.handleEndTurnClick}
+                isComputerInTokyo={this.getPlayerInTokyo() && this.getPlayerInTokyo().computer}
                 showRelinquishTokyoButtonForPlayer={currentTurn.playerInTokyoPendingLeaveDecision ? this.getPlayerInTokyo() : null}
                 onRelinquishTokyoButtonClick={this.handleRelinquishTokyoButtonClick}
               />
