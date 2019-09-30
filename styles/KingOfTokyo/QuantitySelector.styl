@@ -1,0 +1,42 @@
+
+.quantitySelector
+  display inline-flex
+  background white
+  border-radius 3px
+
+.value
+  padding 0 20px
+  height 40px
+  line-height 40px
+  border solid 1px rgba(#000, .4)
+  border-top none
+  border-bottom none
+  color rgba(#000, .8)
+
+.rightArrow,
+.leftArrow
+  position relative
+  padding 0 20px
+  cursor pointer
+  transition background-color 200ms
+  &:hover
+    background-color rgba(#000, .1)
+  &:after
+    position absolute
+    top 10px
+    content ''
+    display block
+    border solid 10px transparent
+    transition border-color 200ms
+.rightArrow
+  &:after
+    left 15px
+    border-left-color rgba(#000, .5)
+  &:hover:after
+    border-left-color rgba(#000, .8)
+.leftArrow
+  &:after
+    left 5px
+    border-right-color rgba(#000, .5)
+  &:hover:after
+    border-right-color rgba(#000, .8)

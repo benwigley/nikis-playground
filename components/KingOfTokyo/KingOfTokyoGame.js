@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { find, indexOf } from 'lodash'
+import QuantitySelector from './QuantitySelector'
 
 import helpers from '../../lib/KingOfTokyo/helpers'
 import { diceLookup, diceFaceKeys } from '../../lib/KingOfTokyo/config'
@@ -600,6 +601,18 @@ export default class KingOfTokyoGame extends Component {
     })
   }
 
+  handleMonsterSelectionChange = (option) => {
+    console.log('handleMonsterSelectionChange option', option)
+  }
+
+  handleNumberOfHumanPlayersChange = (option) => {
+    console.log('handleNumberOfHumanPlayersChange option', option)
+  }
+
+  handleNumberOfComputerPlayersChange = (option) => {
+    console.log('handleNumberOfComputerPlayersChange option', option)
+  }
+
   render() {
     const currentTurn = this.getCurrentTurn()
 
@@ -613,6 +626,31 @@ export default class KingOfTokyoGame extends Component {
             winningPlayer={this.getWinningPlayer()}
           />
 
+
+          <div>
+            <div>
+              {this.renderPlayer}
+            </div>
+            <h3>Opponents</h3>
+            <h4>Number of human players</h4>
+            <QuantitySelector 
+              className={css.humanPlayersSelector}
+              options={[
+                { value: 1, name: 1 }, 
+                { value: 2, name: 2 }
+              ]}
+              onChange={this.handleNumberOfHumanPlayersChange} />
+
+            <h4>Number of computer players</h4>
+            <QuantitySelector 
+              className={css.humanPlayersSelector}
+              options={[
+                { value: 1, name: 1 }, 
+                { value: 2, name: 2 }
+              ]}
+              onChange={this.handleNumberOfComputerPlayersChange} />
+          </div>
+
           {!this.state.gameStarted && (
             <div className={css.startButtonContainer}>
               <button 
@@ -621,6 +659,8 @@ export default class KingOfTokyoGame extends Component {
               >
                 Start game!
               </button>
+
+      
             </div>
           )}
 
