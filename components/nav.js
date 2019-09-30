@@ -25,6 +25,10 @@ class Nav extends Component {
         href: '/king-of-tokyo',
         label: 'King of Tokyo'
       },
+      {
+        href: '/tjmer-homepage',
+        label: 'TjMER Homepage'
+      },
       // {
       //   href: '/shopping-list',
       //   label: 'Shopping List'

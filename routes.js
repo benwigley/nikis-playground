@@ -14,6 +14,11 @@ const ourRoutes = [
     pattern: '/king-of-tokyo',
     name: 'King of Tokyo'
   },
+  {
+    page: 'tjmer-homepage',
+    pattern: '/tjmer-homepage',
+    name: 'TjMER Homepage'
+  },
   // {
   //   page: 'bmi-calculator',
   //   pattern: '/bmi-calculator'
