@@ -7,12 +7,12 @@
 	box-sizing border-box
 
 
-.body 
+body
 	margin 0
 	font-family 'Montserrat', sans-serif
 	font-weight 400
 	line-height 1.6
-	color #fff
+	letter-spacing 1px
 
 
 .container 
@@ -45,23 +45,28 @@ a
 h1 
 	margin 0
 	font-size 36px
-	font-weight 400
+	font-weight 300
 	line-height 1.3
+	letter-spacing 5px
+	color #fff
 
 
 .headerP
 	margin 0
 	font-size 20px
+	color #fff
 
 
 h2 
 	margin 0.2em 0 1.5em
 	text-decoration none
 	font-size 20px
+	font-weight 700
 
 
 h3 
 	text-transform uppercase
+	color #fff
 
 
 /* underlines current page in top nav */
@@ -160,7 +165,7 @@ h3
 
 .columns 
 	display flex
-	align-items center
+	align-items top
 	justify-content space-between
 
 
@@ -173,7 +178,7 @@ h3
 .explanation 
 	justify-content center
 	text-align center
-
+	color #fff
 
 img 
 	filter invert(100%)
@@ -183,9 +188,10 @@ img
 .mathSymbol 
 	justify-content center
 	font-size 60px
-	padding 10px
+	padding 20px
 	text-align center
 	margin-bottom 5px
+	color #fff
 
 
 
@@ -244,6 +250,9 @@ input
 .fn 
 	margin-right 1.75em
 
+.ln 
+	margin-right 1.75em
+
 
 #email 
 	width 75%
@@ -272,7 +281,7 @@ footer
 	padding 0 0.5em
   
 footer li a:hover 
-    color #88A1CB
+	color #88A1CB
 
 
 .footerTop 
@@ -299,6 +308,7 @@ footer li a:hover
 	margin 0
 	padding 0
 	text-transform uppercase
+	color #fff
 
 
 .links 
@@ -347,13 +357,13 @@ hr
 	justify-content space-between
 
 
-.copyRight,
+.copyright,
 .legalPriv li 
 	font-size 10px
 	margin 0 2em 2em
 	letter-spacing 1px
-	color rgba(255,255,255, 0.65)
-
+	color #fff
+	list-style none
 
 
 
@@ -401,7 +411,7 @@ hr
 /* to-do reformat into mobile-first */
 
 /* makes section one stack when screen width is >600px */
-@media (max-width 675px) 
+@media (max-width 750px) 
 	.columns 
 		flex-direction column
 		max-width 90%

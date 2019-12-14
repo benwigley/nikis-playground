@@ -2,17 +2,17 @@ import { Component } from 'react'
 import Head from '../components/Head'
 import Nav from '../components/Nav'
 import '../styles/global/base.styl'
-import Homepage from '../components/TjmerSite/Homepage'
+import About from '../components/TjmerSite/About'
 
 
-export default class TjMERHomepage extends Component {
+export default class TjMERAbout extends Component {
 
   render() {
     return (
       <div>
-        <Head title="TjMER Homepage" />
+        <Head title="About" />
         <div>
-          <Homepage />
+          <About />
         </div>
       </div>
     )
