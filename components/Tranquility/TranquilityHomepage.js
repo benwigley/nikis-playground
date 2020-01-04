@@ -11,7 +11,9 @@ export default function TranquilityHomepage() {
   return (
     <div className={css.tranquility}>
       
-      <MailchimpSubscribe url={url} />
+      <div className={css.mailchipForm}>
+        <MailchimpSubscribe url={url} />
+      </div>
 
     </div>
   )
